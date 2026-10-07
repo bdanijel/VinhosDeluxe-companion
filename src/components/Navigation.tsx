@@ -5,12 +5,11 @@ import {
   Trophy, 
   Calculator, 
   Search, 
-  Wine, 
-  Grid3X3,
-  BookOpen
+  MapPin, 
+  Grid3X3
 } from 'lucide-react';
 
-export type TabType = 'tracker' | 'actions' | 'rules' | 'calculator' | 'endgame' | 'setup' | 'winecalc' | 'github';
+export type TabType = 'tracker' | 'actions' | 'regions' | 'rules' | 'calculator' | 'endgame' | 'setup' | 'winecalc' | 'github';
 
 interface NavigationProps {
   currentTab: TabType;
@@ -21,9 +20,9 @@ export const Navigation: React.FC<NavigationProps> = ({ currentTab, onSelectTab 
   const tabs = [
     { id: 'tracker' as TabType, label: 'Partija', icon: Compass },
     { id: 'actions' as TabType, label: 'Akcije', icon: Grid3X3 },
+    { id: 'regions' as TabType, label: 'Regije', icon: MapPin },
     { id: 'rules' as TabType, label: 'Nedoumice', icon: Search },
     { id: 'calculator' as TabType, label: 'Kalkulator', icon: Calculator },
-    { id: 'endgame' as TabType, label: 'Kraj & Tie', icon: Trophy },
     { id: 'setup' as TabType, label: 'Postavka', icon: CheckSquare },
   ];
 

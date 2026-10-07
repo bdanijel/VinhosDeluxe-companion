@@ -58,26 +58,30 @@ export const SETUP_STEPS: SetupStep[] = [
     id: 'setup-board',
     title: '1. Glavna tabla i Vremenska Prognoza',
     category: 'board',
-    description: 'Postavka centralne table Vinhos Deluxe.',
+    description: 'Postavka centralne table Vinhos Deluxe (Special Vintage 2016).',
     details: [
-      'Postavite glavnu tablu na sredinu stola.',
-      'Promešajte 6 Vintage (berbanskih) pločica i složite ih licem nadole na prostor vremenske prognoze. Okrenite prvu pločicu za 1. godinu (preskače se faza pripreme za godinu 1).',
-      'Postavite beli marker Godine/Poreza (Year/Taxation) na prostor 1. godine.',
-      'Složite pločice vinarija (Wineries) i podruma (Cellars) na odgovarajuća polja table.',
-      'Složite 4 kupa vinskih stručnjaka (Wine Experts: Ukus, Aroma, Izgled, Alkohol) licem nadole pored table.',
-      'Postavite Magnat akcione i multiplikatorske pločice prema pravilima odabrane verzije (Special Vintage 2016 ili 2010 Reserve).'
+      'Postavite glavnu tablu na stranu Special Vintage 2016 na sredinu stola.',
+      'Uklonite "0" (nula) Vintage pločicu u kutiju (ne koristi se u 2016 verziji). Promešajte preostalih 8 Vintage pločica licem nadole i okrenite gornju za 1. godinu.',
+      'Postavite beli marker Godine/Poreza na početno polje 1. godine.',
+      'Pripremite komponente za 2 IGRAČA na tablu (tačne količine iz Reference Book-a):',
+      '  • 11 Vinarija (Wineries) na tablu (višak u kutiju).',
+      '  • 8 Podruma (Cellars) na tablu (višak u kutiju).',
+      '  • 7 Enologa na tablu (višak u kutiju).',
+      '  • 9 Farmera na tablu (višak u kutiju).',
+      'Složite 4 kupa vinskih stručnjaka (Ukus, Aroma, Izgled, Alkohol) licem nagore na odgovarajuća polja table.'
     ]
   },
   {
     id: 'setup-regions',
-    title: '2. Portugalske Regije i Kockice Renomea',
+    title: '2. Regije u 2 Igrača (Igra se sa 7 Regija!)',
     category: 'board',
-    description: 'Priprema 9 vinogradarskih regija Portugala.',
+    isTwoPlayerSpecial: true,
+    description: 'U 2 igrača priprema se tačno 7 od 9 regija.',
     details: [
-      'Za svaku od 9 regija stavite odgovarajuće pločice vinograda (Vineyards) u kup sa cenom okrenutom nagore.',
-      'Svaka regija ima po 2 crvena i 2 bela vinograda.',
-      'Stavite kocke renomea regije (Region Renown Cubes) u zajedničku zalihu pored table (drvene bele/neutralne kocke).',
-      'Pripremite figuru farmera i enologa u opštu zalihu.'
+      'Zvanična preporuka pravila za 2 igrača: UKLONITE Setúbal (regija 7) i Algarve (regija 9) u kutiju!',
+      'Za preostalih 7 regija složite pločice vinograda u kup sa cenom okrenutom nagore (po 2 crvena i 2 bela vinograda po regiji).',
+      'Stavite 2 Porto pločice u Douro regiju (regija 3).',
+      'Stavite sve Kockice Renomea (Region Renown Cubes) u zajedničku zalihu.'
     ]
   },
   {
@@ -87,36 +91,60 @@ export const SETUP_STEPS: SetupStep[] = [
     isTwoPlayerSpecial: true,
     description: 'KRITIČNO ZA DVA IGRAČA: Koristi se ograničeni 2-player ram za izvoz!',
     details: [
-      'U partiji za 2 igrača (Danijel i Ceca), stavite poseban ram za 2 igrača (2-player frame overlay) preko Export zone.',
+      'Stavite poseban ram za 2 igrača (2-player frame overlay) preko Export zone.',
       'Dozvoljeno je izvoziti vino SAMO na polja koja se nalaze unutar 2-player rama!',
       'Polja van rama su blokirana i ne mogu se koristiti u ovoj partiji.',
-      'Ovo stvara izuzetno tesnu i napetu borbu za većine u kolonama (zemljama uvoznika) i brzinu plasiranja buradi.'
+      'Ovo stvara izuzetno tesnu borbu za većine u kolonama (14, 12, 10, 8, 6 VP).'
+    ]
+  },
+  {
+    id: 'setup-magnates',
+    title: '4. Magnat Pločice za 2 Igrača',
+    category: 'board',
+    isTwoPlayerSpecial: true,
+    description: 'Priprema Magnat Action i Multiplier kupova.',
+    details: [
+      'Zelene Action pločice: Vratite u kutiju sve pločice sa ikonicom "3+" ili "4 igrača". Promešajte i popunite SAMO 6 polja u prikazu (ostala ostaju prazna). Ostatak kupa stavite pored table.',
+      'Ljubičaste Multiplier pločice: U 2 igrača koristi se samo 12 pločica (onih 10 sa ukrasnim ornamentom na vrhu + 2 unikatne pločice). Promešajte ih u poseban kup.',
+      'Stavite diskove Danijela i Cece na Fair logo između sajamskih štandova i na "0" na Fair traci bodova.'
     ]
   },
   {
     id: 'setup-players',
-    title: '4. Danijel (Žuti) i Ceca (Crvena) – Lične Table',
+    title: '5. Danijel (Žuti) i Ceca (Crvena) – Resursi i Početni Novac',
     category: 'player_board',
     isTwoPlayerSpecial: true,
-    description: 'Postavka ličnih tabli i komponenti za Danijela i Cecu.',
+    description: 'Postavka ličnih tabli i početnih Bagosa (Reference Book str. 4).',
     details: [
-      'Danijel uzima ŽUTE komponente (Yellow): tablu igrača, diskove, akcijski marker, markere redosleda poteza i drvenu žutu burad.',
-      'Ceca uzima CRVENE komponente (Red): tablu igrača, diskove, akcijski marker, markere redosleda poteza i drvenu crvenu burad.',
-      'Svaki igrač postavlja po 1 marker regije u prvi slot svakog od svojih 5 imanja na tabli.',
-      'Burad: Postavite po 1 bure kod svakog od 3 magnata (Anabela, Bruno, Carolina). Ostatak buradi ide na vašu tablu u zonu zaliha (Supply).',
-      'Postavite diskove igrača na startnu poziciju Sajamske bodovne trake (0 poena) i na stazu pobedničkih poena (VP).',
-      'Početni novac: Svaki igrač započinje sa početnim Bagosima po izabranoj varijanti (u 2016 Special Vintage standardno 10 Bagosa).'
+      'Danijel uzima ŽUTE komponente, Ceca CRVENE komponente.',
+      'Burad (tačno 8 buradi po igraču):',
+      '  • Postavite po 2 bureta kod svakog od 3 magnata (ukupno 6 buradi u zoni magnata).',
+      '  • Preostala 2 bureta stavite u svoje lične zalihe (Supply) na tabli igrača.',
+      'Postavite po 1 disk (marker regije) na prvi slot svakog od svojih 5 imanja.',
+      'Postavite diskove na broj 0 na stazi pobedničkih poena (VP).',
+      'POČETNI NOVAC ZA 2016 SPECIAL VINTAGE (Ref. Knjiga str. 4, stavka 8):',
+      '  • Prvi igrač dobija 19 BAGOSA u gotovini.',
+      '  • Drugi igrač dobija 20 BAGOSA u gotovini.'
     ]
   },
   {
-    id: 'setup-quadrel',
-    title: '5. Početne Akcije na Quadrelu',
+    id: 'setup-initial-vineyard',
+    title: '6. Izbor Početnog Vinograda i Besplatno Početno Vino',
     category: 'player_board',
-    description: 'Postavljanje na centralni akcijski kvadrat (Quadrel 3x3).',
+    isTwoPlayerSpecial: true,
+    description: 'Pre nego što 1. godina počne, svaki igrač bira 1 besplatno početno imanje!',
     details: [
-      'Odredite ko je prvi igrač (nasumično ili najskoriji posetilac vinarije). Postavite markere redosleda poteza.',
-      'Na početku 1. godine igrači još uvek nemaju akcijski marker na Quadrelu – pri svom prvom potezu stavljaju ga na BILO KOJE polje na Quadrelu bez plaćanja troškova kretanja!',
-      'Troškovi kretanja se primenjuju tek od sledećih pomeranja.'
+      'Po redosledu poteza, svaki igrač bira BILO KOJU dostupnu regiju:',
+      '  a) Stavite 1 Kockicu Renomea u ram te regije.',
+      '  b) Uzmite gornju pločicu vinograda te regije BESPLATNO i stavite na 1. slot praznog imanja.',
+      '  c) Pomerite disk sa tog slota na odgovarajuću regiju na mapi.',
+      '  d) Uzmite BESPLATNO POČETNO VINO u skladište (ili podrum za Dão):',
+      '     • Minho / Trás-os-Montes: Vino vrednosti 2',
+      '     • Douro: Vino vrednosti 2, ILI vrednosti 5 ako odmah pravite Porto vino!',
+      '     • Dão: Odmah besplatan Podrum i vino vrednosti 2 u njemu!',
+      '     • Ribatejo: Odmah besplatan Farmer na vinogradu i vino vrednosti 3!',
+      '     • Lisboa: Odmah besplatna Vinarija i vino vrednosti 3!',
+      '  e) U OBRNUTOM redosledu poteza: svaki igrač bira po 1 Magnat Action pločicu iz ponude licem nagore pored svoje table!'
     ]
   }
 ];
