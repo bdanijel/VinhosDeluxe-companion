@@ -6,10 +6,11 @@ import {
   Calculator, 
   Search, 
   Wine, 
-  Github 
+  Grid3X3,
+  BookOpen
 } from 'lucide-react';
 
-export type TabType = 'tracker' | 'setup' | 'endgame' | 'calculator' | 'winecalc' | 'rules' | 'github';
+export type TabType = 'tracker' | 'actions' | 'rules' | 'calculator' | 'endgame' | 'setup' | 'winecalc' | 'github';
 
 interface NavigationProps {
   currentTab: TabType;
@@ -18,12 +19,12 @@ interface NavigationProps {
 
 export const Navigation: React.FC<NavigationProps> = ({ currentTab, onSelectTab }) => {
   const tabs = [
-    { id: 'tracker' as TabType, label: 'Partija', icon: Compass, badge: 'Runda' },
-    { id: 'setup' as TabType, label: 'Postavka', icon: CheckSquare, badge: '2P' },
-    { id: 'endgame' as TabType, label: 'Kraj & Tie', icon: Trophy, badge: 'Pravila' },
-    { id: 'calculator' as TabType, label: 'Kalkulator', icon: Calculator, badge: 'Bodovi' },
-    { id: 'winecalc' as TabType, label: 'Vino', icon: Wine, badge: 'Formula' },
-    { id: 'rules' as TabType, label: 'Nedoumice', icon: Search, badge: 'FAQ' },
+    { id: 'tracker' as TabType, label: 'Partija', icon: Compass },
+    { id: 'actions' as TabType, label: 'Akcije', icon: Grid3X3 },
+    { id: 'rules' as TabType, label: 'Nedoumice', icon: Search },
+    { id: 'calculator' as TabType, label: 'Kalkulator', icon: Calculator },
+    { id: 'endgame' as TabType, label: 'Kraj & Tie', icon: Trophy },
+    { id: 'setup' as TabType, label: 'Postavka', icon: CheckSquare },
   ];
 
   return (
