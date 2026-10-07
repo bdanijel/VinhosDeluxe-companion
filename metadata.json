@@ -1,0 +1,6 @@
+{
+  "name": "Vinhos Deluxe Companion",
+  "description": "Mobilni asistent za društvenu igru Vinhos Deluxe: postavka za 2 igrača (Danijel i Ceca), trigger za kraj, pravila tie-breakera, pretraga pravila i kalkulator bodova.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
