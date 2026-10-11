@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
-import { Wine, Sparkles, TrendingUp, HelpCircle, ShieldAlert, Check } from 'lucide-react';
+import { Wine, Sparkles, TrendingUp, HelpCircle, ShieldAlert, Check, Scale } from 'lucide-react';
+import { GameEdition } from '../types';
 
-export const WineCalculator: React.FC = () => {
+interface WineCalculatorProps {
+  edition?: GameEdition;
+}
+
+export const WineCalculator: React.FC<WineCalculatorProps> = ({ edition = '2010' }) => {
+  const [currentEdition, setCurrentEdition] = useState<GameEdition>(edition);
+
   // Quality calculator state
   const [vineyards, setVineyards] = useState<number>(1);
   const [farmers, setFarmers] = useState<number>(0);
@@ -38,19 +45,62 @@ export const WineCalculator: React.FC = () => {
   return (
     <div className="space-y-5 pb-20 animate-fadeIn">
       {/* Title Card */}
-      <div className="bg-gradient-to-r from-red-950/60 via-amber-950/40 to-stone-900 p-4 rounded-2xl border border-red-900/40 shadow-lg">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 rounded-xl bg-red-600/20 border border-red-500/30 flex items-center justify-center text-red-300">
-            <Wine className="w-6 h-6" />
-          </div>
-          <div>
-            <h2 className="text-lg font-bold text-amber-100">Kalkulator za Vino</h2>
-            <p className="text-xs text-stone-300">Kvalitet u berbi vs Vrednost pri prodaji / izvozu / sajmu</p>
+      <div className={`p-4 rounded-2xl border shadow-lg space-y-2.5 ${
+        currentEdition === '2010'
+          ? 'bg-gradient-to-r from-rose-950 via-stone-900 to-rose-950/80 border-rose-800/60'
+          : 'bg-gradient-to-r from-red-950/60 via-amber-950/40 to-stone-900 border-red-900/40'
+      }`}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center border ${
+              currentEdition === '2010'
+                ? 'bg-rose-600/30 border-rose-500/40 text-rose-300'
+                : 'bg-red-600/20 border-red-500/30 text-red-300'
+            }`}>
+              <Wine className="w-6 h-6" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-stone-100 font-display">Kalkulator za Vino</h2>
+              <p className="text-xs text-stone-300">Kvalitet u berbi vs Vrednost pri prodaji / izvozu / sajmu</p>
+            </div>
           </div>
         </div>
-        <p className="text-xs text-stone-300">
-          U Vinhosu je najčešća nedoumica razlika između <strong className="text-amber-300">Kvaliteta</strong> (koji se pravi u berbi) i <strong className="text-emerald-300">Vrednosti</strong> (koja se dobija starenjem i renomeom regije).
-        </p>
+
+        {/* Edition Pill Selector */}
+        <div className="grid grid-cols-2 gap-2 bg-stone-950/80 p-1 rounded-xl border border-stone-800">
+          <button
+            onClick={() => setCurrentEdition('2010')}
+            className={`py-1 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+              currentEdition === '2010'
+                ? 'bg-rose-700 text-white shadow-[0_0_8px_#be123c]'
+                : 'text-stone-400 hover:text-stone-200'
+            }`}
+          >
+            <span className="w-2 h-2 rounded-full bg-rose-400" />
+            <span>2010 Reserve</span>
+          </button>
+          <button
+            onClick={() => setCurrentEdition('2016')}
+            className={`py-1 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+              currentEdition === '2016'
+                ? 'bg-amber-600 text-white shadow-[0_0_8px_#d97706]'
+                : 'text-stone-400 hover:text-stone-200'
+            }`}
+          >
+            <span className="w-2 h-2 rounded-full bg-amber-400" />
+            <span>2016 Vintage</span>
+          </button>
+        </div>
+
+        {/* 2010 Farmer Notice */}
+        {currentEdition === '2010' && (
+          <div className="bg-rose-950/40 border border-rose-800/60 p-2 rounded-xl text-[11px] text-rose-200 flex items-start gap-2">
+            <Scale className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+            <div>
+              <strong className="text-rose-300">2010 pravilo za radnike:</strong> Farmeri se <strong>ne mogu unajmljivati</strong> na Quadrelu (jedini farmer u igri dolazi iz Ribatejo imanja). Enolozi zahtevaju godišnju platu od 1 Bago sa bankovnog računa!
+            </div>
+          </div>
+        )}
       </div>
 
       {/* SECTION 1: QUALITY CALCULATOR */}
@@ -119,10 +169,14 @@ export const WineCalculator: React.FC = () => {
           <div className="flex items-center justify-between bg-stone-950/60 p-2.5 rounded-xl border border-stone-800/80">
             <div>
               <span className="font-semibold text-stone-200">Farmeri na vinogradima (+1 svaki)</span>
-              <p className="text-[10px] text-stone-400">Max 1 farmer po vinogradu (max {vineyards})</p>
+              <p className="text-[10px] text-stone-400">
+                {currentEdition === '2010' 
+                  ? 'U 2010 samo iz Ribateja (max 1)' 
+                  : `Max 1 farmer po vinogradu (max ${vineyards})`}
+              </p>
             </div>
             <div className="flex items-center gap-2">
-              {[0, 1, 2].filter(n => n <= vineyards).map(num => (
+              {[0, 1, ...(currentEdition === '2010' ? [] : [2])].filter(n => n <= vineyards).map(num => (
                 <button
                   key={num}
                   onClick={() => setFarmers(num)}
@@ -164,8 +218,8 @@ export const WineCalculator: React.FC = () => {
           {/* Weather condition */}
           <div className="flex items-center justify-between bg-stone-950/60 p-2.5 rounded-xl border border-stone-800/80">
             <div>
-              <span className="font-semibold text-stone-200">Vremenska prognoza (Vintage pločica)</span>
-              <p className="text-[10px] text-stone-400">Broj u gornjem levom uglu (-2 do +2)</p>
+              <span className="font-semibold text-stone-200">Vremenska prognoza (Vintage)</span>
+              <p className="text-[10px] text-stone-400">Modifikator berbe (-2 do +2)</p>
             </div>
             <div className="flex items-center gap-1">
               {[-2, -1, 0, 1, 2].map(bonus => (
@@ -188,7 +242,7 @@ export const WineCalculator: React.FC = () => {
           <div className="flex items-center justify-between bg-stone-950/60 p-2.5 rounded-xl border border-stone-800/80">
             <div>
               <span className="font-semibold text-stone-200">Porto vino u Douro regiji? (+3)</span>
-              <p className="text-[10px] text-stone-400">Douro specijalitet po pravilima</p>
+              <p className="text-[10px] text-stone-400">Trošenje Porto pločice pri proizvodnji</p>
             </div>
             <button
               onClick={() => setIsPorto(!isPorto)}
@@ -216,11 +270,11 @@ export const WineCalculator: React.FC = () => {
             {isZeroQuality ? (
               <div className="text-xs font-bold text-red-400 flex items-center gap-1 mt-0.5">
                 <ShieldAlert className="w-4 h-4 shrink-0" />
-                Kvalitet je 0 ili manji! Nema dovoljno grožđa, ne uzima se pločica vina!
+                Kvalitet je 0 ili manji! Nema grožđa, ne uzima se vino!
               </div>
             ) : (
               <div className="text-xs text-stone-300 mt-0.5">
-                Uzmi pločicu vina iz zalihe sa ovim brojem i stavi u najlevlji slot imanja.
+                Uzmi pločicu vina sa ovim kvalitetom i stavi u najlevlji slot.
               </div>
             )}
           </div>
@@ -240,7 +294,7 @@ export const WineCalculator: React.FC = () => {
             <span className="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-300 flex items-center justify-center text-xs font-bold border border-emerald-500/30">
               2
             </span>
-            <h3 className="font-bold text-stone-200 text-sm">Računanje Vrednosti Vina (Value)</h3>
+            <h3 className="font-bold text-stone-200 text-sm">Računanje Vrednosti Vina (Wine Value)</h3>
           </div>
           <span className="text-[11px] text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded-full border border-emerald-900/50">
             Prodaja • Izvoz • Sajam
@@ -248,114 +302,115 @@ export const WineCalculator: React.FC = () => {
         </div>
 
         <div className="space-y-3 text-xs">
-          {/* Quality Input */}
+          {/* Base Quality on Tile */}
           <div className="flex items-center justify-between bg-stone-950/60 p-2.5 rounded-xl border border-stone-800/80">
             <div>
-              <span className="font-semibold text-stone-200">Kvalitet vina sa pločice</span>
-              <p className="text-[10px] text-stone-400">Broj odštampan na samoj pločici vina</p>
+              <span className="font-semibold text-stone-200">Kvalitet sa pločice vina</span>
+              <p className="text-[10px] text-stone-400">Broj odštampan na samoj pločici</p>
             </div>
-            <div className="flex items-center gap-1.5">
-              <input
-                type="number"
-                min="1"
-                max="12"
-                value={wineQualityInput}
-                onChange={(e) => setWineQualityInput(Math.max(1, parseInt(e.target.value) || 1))}
-                className="w-14 h-8 text-center bg-stone-900 border border-stone-700 rounded-lg text-amber-300 font-bold text-sm"
-              />
-            </div>
+            <input
+              type="number"
+              min="1"
+              max="12"
+              value={wineQualityInput}
+              onChange={(e) => setWineQualityInput(parseInt(e.target.value) || 0)}
+              className="w-16 bg-stone-900 border border-stone-700 rounded-lg p-1 text-center font-bold text-amber-300 text-sm"
+            />
           </div>
 
-          {/* Cellar aging slot */}
+          {/* Cellar Aging Slot */}
           <div className="bg-stone-950/60 p-2.5 rounded-xl border border-stone-800/80 space-y-1.5">
             <div className="flex justify-between items-center">
-              <span className="font-semibold text-stone-200">Starenje u Podrumu (Cellar)</span>
-              <span className="text-stone-400 text-[10px]">U skladištu nema ovog bonusa</span>
+              <span className="font-semibold text-stone-200">Godine starenja u Podrumu:</span>
+              <span className="text-[10px] text-stone-400">
+                {currentEdition === '2010' ? 'Podrum košta 2B' : 'Podrum košta 3B'}
+              </span>
             </div>
-            <div className="grid grid-cols-4 gap-1.5 pt-1">
+            <div className="grid grid-cols-4 gap-1 text-center">
               {[
-                { label: 'Skladište / Novo', val: 0, text: '+0' },
-                { label: 'Slot 2 (+1)', val: 1, text: '+1' },
-                { label: 'Slot 3 (+3)', val: 3, text: '+3' },
-                { label: 'Slot 4 (+5)', val: 5, text: '+5' },
+                { label: 'Slot 1 (+0)', val: 0 },
+                { label: 'Slot 2 (+1)', val: 1 },
+                { label: 'Slot 3 (+3)', val: 3 },
+                { label: 'Slot 4 (+5)', val: 5 },
               ].map(slot => (
                 <button
                   key={slot.val}
                   onClick={() => setCellarAgingSlot(slot.val)}
-                  className={`p-1.5 rounded-lg text-center transition ${
-                    cellarAgingSlot === slot.val
-                      ? 'bg-emerald-700 text-white font-bold border border-emerald-500 shadow-[0_0_8px_#059669]'
-                      : 'bg-stone-800 text-stone-400 hover:bg-stone-700'
+                  className={`py-1.5 rounded-lg font-bold text-[10px] transition ${
+                    cellarAgingSlot === slot.val 
+                      ? 'bg-emerald-600 text-white shadow-[0_0_8px_#059669]' 
+                      : 'bg-stone-800 text-stone-300 hover:bg-stone-700'
                   }`}
                 >
-                  <span className="block text-[11px] font-bold">{slot.text}</span>
-                  <span className="block text-[9px] opacity-75 truncate">{slot.label}</span>
+                  {slot.label}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Renown cubes */}
-          <div className="bg-stone-950/60 p-2.5 rounded-xl border border-stone-800/80 space-y-2">
-            <div className="flex justify-between items-center">
-              <div>
-                <span className="font-semibold text-stone-200">Kockice renomea regije (Renown)</span>
-                <p className="text-[10px] text-stone-400">Uklanja se 1 ili 2 kocke sa table regije</p>
-              </div>
-              <div className="flex gap-1.5">
-                {[0, 1, 2].map(cubes => (
-                  <button
-                    key={cubes}
-                    onClick={() => setRenownCubesUsed(cubes)}
-                    className={`w-8 h-8 rounded-lg font-bold text-xs transition ${
-                      renownCubesUsed === cubes
-                        ? 'bg-emerald-600 text-white shadow-[0_0_8px_#059669]'
-                        : 'bg-stone-800 text-stone-400 hover:bg-stone-700'
-                    }`}
-                  >
-                    {cubes}
-                  </button>
-                ))}
-              </div>
+          {/* Renown Cubes Used */}
+          <div className="flex items-center justify-between bg-stone-950/60 p-2.5 rounded-xl border border-stone-800/80">
+            <div>
+              <span className="font-semibold text-stone-200">Iskorišćene Kocke Renomea (max 2)</span>
+              <p className="text-[10px] text-stone-400">Skidaju se sa table regije ako su potrebne</p>
             </div>
-
-            {/* Region specific bonuses */}
-            <div className="grid grid-cols-2 gap-2 pt-1">
-              <button
-                onClick={() => setIsAlentejo(!isAlentejo)}
-                className={`p-2 rounded-lg text-left transition border ${
-                  isAlentejo 
-                    ? 'bg-amber-900/40 border-amber-500/60 text-amber-200' 
-                    : 'bg-stone-900/60 border-stone-800 text-stone-400'
-                }`}
-              >
-                <div className="font-bold text-[11px]">Vino iz Alenteja?</div>
-                <div className="text-[10px] text-stone-400">Svaka kocka daje +2 umesto +1</div>
-              </button>
-
-              <button
-                onClick={() => setIsAlgarve(!isAlgarve)}
-                className={`p-2 rounded-lg text-left transition border ${
-                  isAlgarve 
-                    ? 'bg-amber-900/40 border-amber-500/60 text-amber-200' 
-                    : 'bg-stone-900/60 border-stone-800 text-stone-400'
-                }`}
-              >
-                <div className="font-bold text-[11px]">Vino iz Algarve?</div>
-                <div className="text-[10px] text-stone-400">Stalni fiksni bonus +1 vrednost</div>
-              </button>
+            <div className="flex gap-1">
+              {[0, 1, 2].map(cnt => (
+                <button
+                  key={cnt}
+                  onClick={() => setRenownCubesUsed(cnt)}
+                  className={`w-8 h-8 rounded-lg font-bold transition ${
+                    renownCubesUsed === cnt 
+                      ? 'bg-emerald-600 text-white shadow-[0_0_8px_#059669]' 
+                      : 'bg-stone-800 text-stone-300 hover:bg-stone-700'
+                  }`}
+                >
+                  {cnt}
+                </button>
+              ))}
             </div>
+          </div>
+
+          {/* Alentejo / Algarve Special toggles */}
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              onClick={() => setIsAlentejo(!isAlentejo)}
+              className={`p-2 rounded-xl border text-[11px] font-semibold text-left transition ${
+                isAlentejo 
+                  ? 'bg-amber-950/60 border-amber-500 text-amber-200' 
+                  : 'bg-stone-950/40 border-stone-800 text-stone-400'
+              }`}
+            >
+              <div className="font-bold flex items-center gap-1">
+                {isAlentejo ? '✓' : '○'} Alentejo (Regija 8)
+              </div>
+              <span className="text-[9px] opacity-75">+2 po kocki renomea (umesto +1)</span>
+            </button>
+
+            <button
+              onClick={() => setIsAlgarve(!isAlgarve)}
+              className={`p-2 rounded-xl border text-[11px] font-semibold text-left transition ${
+                isAlgarve 
+                  ? 'bg-amber-950/60 border-amber-500 text-amber-200' 
+                  : 'bg-stone-950/40 border-stone-800 text-stone-400'
+              }`}
+            >
+              <div className="font-bold flex items-center gap-1">
+                {isAlgarve ? '✓' : '○'} Algarve (Regija 9)
+              </div>
+              <span className="text-[9px] opacity-75">+1 trajni bonus na Vrednost</span>
+            </button>
           </div>
         </div>
 
-        {/* Value Result Banner */}
-        <div className="p-3.5 rounded-xl border bg-emerald-950/40 border-emerald-600/50 flex items-center justify-between text-emerald-100">
+        {/* Final Value Result Banner */}
+        <div className="bg-emerald-950/40 border border-emerald-600/40 p-3.5 rounded-xl flex items-center justify-between text-emerald-100">
           <div>
-            <div className="text-xs uppercase tracking-wider font-semibold opacity-80">
-              Konačna Vrednost Vina:
+            <div className="text-xs uppercase tracking-wider font-semibold opacity-75">
+              Konačna Vrednost Vina (Wine Value):
             </div>
             <div className="text-xs text-stone-300 mt-0.5">
-              Ovo vino može ići na bilo koji slot čiji je zahtev ≤ {computedWineValue}.
+              Ovaj broj mora dostići ili preći traženu vrednost slota za Prodaju, Izvoz ili Sajam!
             </div>
           </div>
           <div className="text-center pl-3">

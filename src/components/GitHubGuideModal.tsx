@@ -4,17 +4,10 @@ import { Github, Check, Copy, ExternalLink, Sparkles, Terminal, Globe } from 'lu
 export const GitHubGuide: React.FC = () => {
   const [copied, setCopied] = useState(false);
 
-  const gitCommands = `# 1. Inicijalizuj git repozitorijum (ako već nisi)
-git init
-
-# 2. Dodaj sve fajlove i workflow za GitHub Actions
+  const gitCommands = `# Dodaj izmene (ažurirani .github/workflows/deploy.yml)
 git add .
-git commit -m "feat: Vinhos Deluxe mobile companion for Danijel & Ceca"
-
-# 3. Poveži sa svojim GitHub repozitorijumom (npr. lejinad5/vinhos-deluxe-companion)
-git branch -M main
-git remote add origin https://github.com/TVOJE_KORISNICKO_IME/vinhos-deluxe-companion.git
-git push -u origin main`;
+git commit -m "fix: update github actions workflow for Node 22 and remove lockfile cache"
+git push origin main`;
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(gitCommands);

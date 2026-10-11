@@ -6,10 +6,11 @@ import {
   Calculator, 
   Search, 
   MapPin, 
-  Grid3X3
+  Grid3X3,
+  Scale
 } from 'lucide-react';
 
-export type TabType = 'tracker' | 'actions' | 'regions' | 'rules' | 'calculator' | 'endgame' | 'setup' | 'winecalc' | 'github';
+export type TabType = 'tracker' | 'actions' | 'differences' | 'regions' | 'rules' | 'calculator' | 'endgame' | 'setup' | 'winecalc' | 'github';
 
 interface NavigationProps {
   currentTab: TabType;
@@ -20,8 +21,8 @@ export const Navigation: React.FC<NavigationProps> = ({ currentTab, onSelectTab 
   const tabs = [
     { id: 'tracker' as TabType, label: 'Partija', icon: Compass },
     { id: 'actions' as TabType, label: 'Akcije', icon: Grid3X3 },
-    { id: 'regions' as TabType, label: 'Regije', icon: MapPin },
-    { id: 'rules' as TabType, label: 'Nedoumice', icon: Search },
+    { id: 'differences' as TabType, label: '2010 vs 2016', icon: Scale },
+    { id: 'rules' as TabType, label: 'Pravila', icon: Search },
     { id: 'calculator' as TabType, label: 'Kalkulator', icon: Calculator },
     { id: 'setup' as TabType, label: 'Postavka', icon: CheckSquare },
   ];
@@ -46,7 +47,7 @@ export const Navigation: React.FC<NavigationProps> = ({ currentTab, onSelectTab 
                 <span className="absolute -top-1 w-8 h-1 bg-amber-500 rounded-full shadow-[0_0_8px_#f59e0b]" />
               )}
               <Icon className={`w-5 h-5 mb-0.5 ${isActive ? 'text-amber-400' : 'text-stone-400'}`} />
-              <span className="text-[10px] leading-tight tracking-tight truncate w-full text-center">
+              <span className="text-[9.5px] leading-tight tracking-tight truncate w-full text-center">
                 {tab.label}
               </span>
             </button>
@@ -56,3 +57,4 @@ export const Navigation: React.FC<NavigationProps> = ({ currentTab, onSelectTab 
     </nav>
   );
 };
+

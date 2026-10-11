@@ -1,6 +1,6 @@
-import { RuleClarification, SetupStep } from '../types';
+import { RuleClarification, SetupStep, VersionDifferenceItem } from '../types';
 
-// Money to VP table from rulebook page 16
+// 2016 Special Vintage: Money to VP table
 export const MONEY_TO_VP_TABLE: { min: number; max: number; vp: number }[] = [
   { min: 0, max: 2, vp: 0 },
   { min: 3, max: 5, vp: 1 },
@@ -19,7 +19,24 @@ export function getVPFromMoney(bagos: number): number {
   return match ? match.vp : (bagos >= 24 ? 22 : 0);
 }
 
-// 2-Player Fair scoring rules (Page 15: "In a 2-player game, use the 1st and 3rd place scorings")
+// 2010 Reserve: Bank Account Marker to VP table (from rulebook pages 12 and 20)
+// "At the end of the game, your Bank Account will earn you the number of VP indicated beside the section with your Account Marker in it."
+// 0-6: 0 VP, 7-9: 3 VP, 10-13: 7 VP, 14-18: 12 VP, 19-24: 18 VP
+export const BANK_TO_VP_TABLE_2010: { min: number; max: number; vp: number }[] = [
+  { min: 0, max: 6, vp: 0 },
+  { min: 7, max: 9, vp: 3 },
+  { min: 10, max: 13, vp: 7 },
+  { min: 14, max: 18, vp: 12 },
+  { min: 19, max: 24, vp: 18 },
+];
+
+export function getVPFromBank2010(bankAccount: number): number {
+  if (bankAccount <= 6) return 0;
+  const match = BANK_TO_VP_TABLE_2010.find(item => bankAccount >= item.min && bankAccount <= item.max);
+  return match ? match.vp : (bankAccount >= 19 ? 18 : 0);
+}
+
+// 2-Player Fair scoring rules (Page 15/17: "In a 2-player game, use the 1st and 3rd place scorings")
 export const FAIR_SCORINGS = [
   {
     fairNumber: 1,
@@ -53,11 +70,239 @@ export const FAIR_SCORINGS = [
   },
 ];
 
+// KEY DIFFERENCES MATRIX: 2010 RESERVE vs 2016 SPECIAL VINTAGE
+export const VERSION_DIFFERENCES: VersionDifferenceItem[] = [
+  {
+    id: 'diff-bank-economy',
+    category: 'finances',
+    title: 'Banka (Banco do Vinho) i ekonomski sistem',
+    impact: 'high',
+    v2010: {
+      title: 'Dvoslojni finansijski sistem: Gotovina + Banka + Investicije',
+      description: 'Igrači vode bankovni račun na posebnoj stazi (0–24 Bagosa) i investicionu stazu (-2 do +3). Prodaja vina puni isključivo bankovni račun, a ne gotovinu!',
+      keyPoints: [
+        'Postoji posebna akcija "Bank" na Quadrelu (Podizanje novca, Polaganje depozita, Investiranje).',
+        'Razinvestiranje (Divesting) se može uraditi U BILO KOM TRENUTKU besplatno (za dobijanje gotovine iz banke).',
+        'U Fazi Održavanja automatski se obračunava kamata sa investicione staze (pozitivna ili negativna).',
+        'Ako ne možete platiti negativnu kamatu u banci: gubite 2 VP i MORATE odbaciti Vinariju (ili Vinograd)!',
+        'Kraj igre: Bodove (0 do 18 VP) donosi SAMO stanje na bankovnom računu. Gotovina u ruci i investiciona staza donose 0 VP!'
+      ],
+      rulebookRef: '2010 Pravila str. 11, 12, 15, 20'
+    },
+    v2016: {
+      title: 'Pojednostavljeni keš sistem (Samo Bagosi u ruci)',
+      description: 'Nema table banke, nema bankovnih računa, nema investicija niti kamata. Sav novac je u gotovini (Bagos žetoni).',
+      keyPoints: [
+        'Akcija "Bank" uopšte ne postoji na Quadrelu.',
+        'Prodaja vina odmah daje direktnu gotovinu u ruku.',
+        'Nema plaćanja kamata u Fazi Održavanja.',
+        'Na kraju igre gotovina se pretvara u VP po posebnoj tabeli (0 do 22 VP).'
+      ],
+      rulebookRef: '2016 Pravila str. 11, 16'
+    },
+    strategicTip: 'U 2010 verziji bankrot je stvaran i brutalan — manjak na bankovnom računu vodi do uništavanja vinarija i gubitka 2 VP!'
+  },
+  {
+    id: 'diff-workers',
+    category: 'workers',
+    title: 'Farmeri i Enolozi (Plate i unajmljivanje)',
+    impact: 'high',
+    v2010: {
+      title: 'Samo Enolozi se kupuju; Farmeri su unikatni i ne kupuju se!',
+      description: 'Na tabli postoji samo akcija "Enologists". Farmeri se uopšte ne mogu kupiti na Quadrelu!',
+      keyPoints: [
+        'Farmeri ne postoje kao kupovni radnici u zalihama — jedini način da dobijete farmera je osnivanjem imanja u Ribatejo regiji!',
+        'Enolog košta samo 1 Bago u gotovini (umesto 3).',
+        'SVAKE GODINE u Fazi Održavanja MORATE platiti 1 Bago po enologu sa bankovnog računa kao platu!',
+        'Ako nemate dovoljno novca na računu da isplatite enologa: gubite 2 VP i enolog biva otpušten!'
+      ],
+      rulebookRef: '2010 Pravila str. 7, 15'
+    },
+    v2016: {
+      title: 'Slobodno unajmljivanje i Enologa i Farmera bez ikakvih plata!',
+      description: 'Akcija na Quadrelu je "Enologists & Farmers". Možete unajmiti bilo koju kombinaciju do 2 radnika.',
+      keyPoints: [
+        'Enolog košta 3 Bagosa, a Farmer 2 Bagosa (plaća se samo jednom pri kupovini).',
+        'U Fazi Održavanja nema nikakvih plata — radnici ostaju na vašoj tabli zauvek besplatno!',
+        'Postoji puna zaliha od 9 farmera na tabli.'
+      ],
+      rulebookRef: '2016 Pravila str. 7'
+    },
+    strategicTip: 'U 2010 verziji svaki enolog je fiksni godišnji trošak. Ne unajmljujte enologe ako nemate stalan priliv novca u banci za plate!'
+  },
+  {
+    id: 'diff-magnates',
+    category: 'magnates',
+    title: 'Magnati i Bonus Akcije (Rešetka vs Pločice)',
+    impact: 'high',
+    v2010: {
+      title: 'Sistemska rešetka na tabli: Žrtvovanje vina i klizanje buradi',
+      description: 'Magnati (Anabela, Bruno, Carolina) imaju sopstvenu rešetku sa stazama za dodatne akcije i multiplajere.',
+      keyPoints: [
+        'U 1. godini NIKO ne može postaviti burad na Magnate!',
+        'Od 2. godine: tokom Press Release-a, ako vino zadovolji zahteve, stavljate 1 ili 2 svoja bureta na portrete Magnata.',
+        'Korišćenje benefita: tokom svog poteza ODBACUJETE 1 VINO sa svoje table da pomerite 1 bure u istom redu na polje Dodatne Akcije ili Multiplajera!',
+        'Bure na multiplajeru se trajno zaključava.',
+        'Maksimalno 1 pomeranje bureta po normalnoj Quadrel akciji.'
+      ],
+      rulebookRef: '2010 Pravila str. 15, 18, 19'
+    },
+    v2016: {
+      title: 'Sistem pločica (Action Tiles & Multiplier Tiles)',
+      description: 'Nema rešetke kretanja buradi. Igrači započinju sa po 2 svoja bureta već postavljenim kod svakog od 3 magnata (ukupno 6).',
+      keyPoints: [
+        'Press Release oslobađa burad nazad u lične zalihe (do 2 bureta po objavi).',
+        'Dodatne akcije dolaze u obliku zelenih akcionih pločica koje se okreću nadole kad se iskoriste.',
+        'Multiplajeri su zasebne ljubičaste pločice koje se kupuju postavljanjem bureta tokom Sajma.'
+      ],
+      rulebookRef: '2016 Pravila str. 12, 13, 15'
+    },
+    strategicTip: 'U 2010 je ključno sačuvati nekoliko vina u podrumu samo zato da ih žrtvujete za aktiviranje moćnih magnat poteza i multiplajera!'
+  },
+  {
+    id: 'diff-sales-barrels',
+    category: 'sales',
+    title: 'Prodaja (Sales) i vraćanje buradi iz lokala',
+    impact: 'high',
+    v2010: {
+      title: 'Vraćanje buradi SAMO U PAROVIMA + 2 Kocke Renomea!',
+      description: 'Prodaja povećava bankovni račun (ne keš). Vraćanje buradi nazad u zalihe je strogo kontrolisano.',
+      keyPoints: [
+        'NIKADA ne možete vratiti samo 1 bure iz lokala (Casa de Fados, Hotel, Enoteca)!',
+        'Morate vratiti TAČNO PAR buradi (2 bureta) iz ISTOG lokala.',
+        'Kada uzmete par buradi, MORATE postaviti 2 Kocke Renomea u 2 različite regije po izboru!',
+        'U Fazi Održavanja postoji varijanta pravila gde igrač mora povući par ako je u mogućnosti.'
+      ],
+      rulebookRef: '2010 Pravila str. 10'
+    },
+    v2016: {
+      title: 'Jednostavno vraćanje 1 bureta svake godine u Održavanju',
+      description: 'Zarada od prodaje ide direktno u gotovinu.',
+      keyPoints: [
+        'U svakoj Fazi Održavanja (oznaka "B"), svaki igrač automatski uzima nazad TAČNO 1 svoje bure iz Sales zone nazad u zalihe.',
+        'Nema uslova za parove, niti obaveze postavljanja kockica renomea za povlačenje.'
+      ],
+      rulebookRef: '2016 Pravila str. 10, 13'
+    },
+    strategicTip: 'U 2010 nemojte ostati zarobljeni sa neparnim brojem buradi u jednom lokalu, jer samostalno bure ne možete vratiti bez drugog para!'
+  },
+  {
+    id: 'diff-quadrel-grid',
+    category: 'quadrel',
+    title: 'Raspored polja na 3x3 Quadrelu i cena podruma',
+    impact: 'medium',
+    v2010: {
+      title: 'Quadrel sa Bankom | Podrum košta 2 Bagosa',
+      description: 'Polja na Quadrelu 2010: Vinogradi, Podrumi, Vinarije / Stručnjaci, Sajam, Enolozi / Izvoz, Prodaja, Banka.',
+      keyPoints: [
+        'Polje "Bank" se nalazi u donjem desnom uglu (redovna Quadrel akcija).',
+        'Podrum (Cellar) košta samo 2 Bagosa u gotovini.',
+        'Akcija je "Enologists" (ne Enologists & Farmers).'
+      ],
+      rulebookRef: '2010 Pravila str. 3, 7, 9'
+    },
+    v2016: {
+      title: 'Quadrel bez Banke (Dupli vinograd) | Podrum košta 3 Bagosa',
+      description: 'Polja na Quadrelu 2016 nemaju Banku; u donjem desnom uglu se nalazi još jedno polje za Vinograde.',
+      keyPoints: [
+        'Nema polja Banke — umesto toga postoji drugo polje za kupovinu Vinograda.',
+        'Podrum (Cellar) košta 3 Bagosa u gotovini.',
+        'Akcija desno u sredini je "Enologists & Farmers".'
+      ],
+      rulebookRef: '2016 Pravila str. 3, 6, 9'
+    },
+    strategicTip: 'U 2010 podrumi su jeftiniji (2 umesto 3 Bagosa), što omogućava brže pokrivanje skladišta za dugotrajno starenje vina.'
+  },
+  {
+    id: 'diff-endgame-trigger',
+    category: 'scoring',
+    title: 'Kraj igre i poslednji potezi (Poslednja akcija vs Magnat potezi)',
+    impact: 'high',
+    v2010: {
+      title: 'Poslednji krug žrtvovanja vina za Magnat poteze',
+      description: 'Nema standardne akcije na Quadrelu nakon 3. sajma!',
+      keyPoints: [
+        'Nakon 3. sajma (kraj 6. godine), igrači redom mogu žrtvovati 1 vino da pomere 1 bure na Magnat rešetki za dodatnu akciju ili multiplajer.',
+        'Ovo se ponavlja u krug sve dok svi igrači ne odustanu (pasiraju).',
+        'Preostala vina na tabli koja NISU žrtvovana DONOSE TAČNO 0 VP na kraju partije!'
+      ],
+      rulebookRef: '2010 Pravila str. 20'
+    },
+    v2016: {
+      title: '1 Obavezna poslednja Quadrel akcija + Pola vrednosti preostalih vina',
+      description: 'Svaki igrač odigrava još tačno jednu standardnu akciju na Quadrelu.',
+      keyPoints: [
+        'Nakon 3. sajma, svaki igrač dobija još TAČNO 1 standardnu akciju na Quadrelu.',
+        'Sva preostala vina na ličnoj tabli donose bodove: svako vino vredi Math.floor(kvalitet / 2) VP!'
+      ],
+      rulebookRef: '2016 Pravila str. 16'
+    },
+    strategicTip: 'U 2010 ako vam na kraju ostane vino u podrumu, bacili ste ga u vetar ako ga ne iskoristite za Magnat potez!'
+  },
+  {
+    id: 'diff-endgame-scoring',
+    category: 'scoring',
+    title: 'Finalno bodovanje i Tie-Breaker',
+    impact: 'high',
+    v2010: {
+      title: 'Bodovanje Banke (Gotovina = 0 VP) | Tie-break: Gotovina + Banka nakon divesta',
+      description: 'Samo stanje markera na stazi Banco do Vinho nosi VP (0 do 18 VP).',
+      keyPoints: [
+        'Gotovina u ruci donosi 0 VP! Pozicija na investicionoj traci donosi 0 VP!',
+        'Preostala vina u podrumu donose 0 VP!',
+        '1. Tie-breaker: Više buradi u Export zoni.',
+        '2. Tie-breaker: Više ukupnog novca (Gotovina u ruci + Bankovni račun) NAKON što izvršite maksimalno razinvestiranje (divest)!'
+      ],
+      rulebookRef: '2010 Pravila str. 20'
+    },
+    v2016: {
+      title: 'Bodovanje Gotovine po tabeli | Tie-break: Gotovina u ruci',
+      description: 'Gotovina u ruci se direktno pretvara u VP po tabeli (0 do 22 VP).',
+      keyPoints: [
+        'Gotovina u ruci donosi VP (3-5 = 1, 6-8 = 3, ... 24+ = 22 VP).',
+        'Preostala vina donose floor(kvalitet/2) VP svako.',
+        '1. Tie-breaker: Više buradi u Export zoni.',
+        '2. Tie-breaker: Više preostale gotovine (Bagosa).'
+      ],
+      rulebookRef: '2016 Pravila str. 16'
+    },
+    strategicTip: 'U 2010 pre kraja partije obavezno deponujte gotovinu u banku ako možete, jer gotovina u ruci ne donosi nijedan jedini pobednički poen!'
+  },
+  {
+    id: 'diff-weather-setup',
+    category: 'setup',
+    title: 'Vremenska prognoza u 1. godini (Pločica "0")',
+    impact: 'medium',
+    v2010: {
+      title: 'Prva godina UVEK ima Vintage pločicu "0"',
+      description: 'U 2010 Reserve verziji, vremenska prognoza za 1. godinu je fiksna.',
+      keyPoints: [
+        'Pločica sa vrednošću "0" se postavlja na polje prognoze za 1. godinu tokom pripreme igre.',
+        'Ostale Vintage pločice se mešaju za godine od 2 do 6.',
+        'Na početku 1. godine markeri karakteristika vina se NE pomeraju.'
+      ],
+      rulebookRef: '2010 Pravila str. 3'
+    },
+    v2016: {
+      title: 'Pločica "0" se trajno uklanja u kutiju!',
+      description: 'U 2016 Special Vintage verziji vreme je promenljivo od samog starta.',
+      keyPoints: [
+        'Vintage pločica "0" se pre početka igre trajno vraća u kutiju.',
+        'Promeša se preostalih 8 pločica i odmah se okreće gornja pločica za 1. godinu sa realnim vremenom (-2 do +2).'
+      ],
+      rulebookRef: '2016 Pravila str. 3'
+    },
+    strategicTip: 'U 2010 u prvoj godini berba je potpuno predvidiva i stabilna jer je modifikator vremena tačno 0.'
+  }
+];
+
+// SETUP STEPS FOR 2016 SPECIAL VINTAGE
 export const SETUP_STEPS: SetupStep[] = [
   {
     id: 'setup-board',
-    title: '1. Glavna tabla i Vremenska Prognoza',
+    title: '1. Glavna tabla i Vremenska Prognoza (2016)',
     category: 'board',
+    edition: '2016',
     description: 'Postavka centralne table Vinhos Deluxe (Special Vintage 2016).',
     details: [
       'Postavite glavnu tablu na stranu Special Vintage 2016 na sredinu stola.',
@@ -75,6 +320,7 @@ export const SETUP_STEPS: SetupStep[] = [
     id: 'setup-regions',
     title: '2. Regije u 2 Igrača (Igra se sa 7 Regija!)',
     category: 'board',
+    edition: 'both',
     isTwoPlayerSpecial: true,
     description: 'U 2 igrača priprema se tačno 7 od 9 regija.',
     details: [
@@ -88,6 +334,7 @@ export const SETUP_STEPS: SetupStep[] = [
     id: 'setup-2p-frame',
     title: '⭐ 3. Izvozna Zona (POKLOPAC / RAM ZA 2 IGRAČA)',
     category: 'two_player_focus',
+    edition: 'both',
     isTwoPlayerSpecial: true,
     description: 'KRITIČNO ZA DVA IGRAČA: Koristi se ograničeni 2-player ram za izvoz!',
     details: [
@@ -99,8 +346,9 @@ export const SETUP_STEPS: SetupStep[] = [
   },
   {
     id: 'setup-magnates',
-    title: '4. Magnat Pločice za 2 Igrača',
+    title: '4. Magnat Pločice za 2 Igrača (2016)',
     category: 'board',
+    edition: '2016',
     isTwoPlayerSpecial: true,
     description: 'Priprema Magnat Action i Multiplier kupova.',
     details: [
@@ -111,8 +359,9 @@ export const SETUP_STEPS: SetupStep[] = [
   },
   {
     id: 'setup-players',
-    title: '5. Danijel (Žuti) i Ceca (Crvena) – Resursi i Početni Novac',
+    title: '5. Danijel (Žuti) i Ceca (Crvena) – Resursi i Početni Novac (2016)',
     category: 'player_board',
+    edition: '2016',
     isTwoPlayerSpecial: true,
     description: 'Postavka ličnih tabli i početnih Bagosa (Reference Book str. 4).',
     details: [
@@ -129,8 +378,9 @@ export const SETUP_STEPS: SetupStep[] = [
   },
   {
     id: 'setup-initial-vineyard',
-    title: '6. Izbor Početnog Vinograda i Besplatno Početno Vino',
+    title: '6. Izbor Početnog Vinograda i Besplatno Početno Vino (2016)',
     category: 'player_board',
+    edition: '2016',
     isTwoPlayerSpecial: true,
     description: 'Pre nego što 1. godina počne, svaki igrač bira 1 besplatno početno imanje!',
     details: [
@@ -149,145 +399,272 @@ export const SETUP_STEPS: SetupStep[] = [
   }
 ];
 
+// SETUP STEPS FOR 2010 RESERVE
+export const SETUP_STEPS_2010: SetupStep[] = [
+  {
+    id: 'setup-board-2010',
+    title: '1. Glavna tabla i Vremenska Prognoza (2010 Reserve)',
+    category: 'board',
+    edition: '2010',
+    description: 'Postavka table 2010 Reserve sa bankom i fiksnim vremenom.',
+    details: [
+      'Postavite glavnu tablu na stranu 2010 RESERVE (sa zonom Banco do Vinho i Magnat rešetkom).',
+      'OBAVEZNO: Pločica "0" (nula) Vintage stavlja se licem nagore na polje 1. godine!',
+      'Promešajte preostalih 8 Vintage pločica licem nadole za godine od 2 do 6.',
+      'Postavite beli marker Godine/Poreza na početno polje 1. godine.',
+      'Radnici i zalihe: Uklonite SVE Farmere sa table (u 2010 farmeri se ne mogu kupovati!). Postavite vinarije, podrume i enologe na odgovarajuća polja.',
+      'Složite 4 kupa vinskih stručnjaka licem nagore.'
+    ]
+  },
+  {
+    id: 'setup-bank-2010',
+    title: '2. Banco do Vinho (Banka i Investicije)',
+    category: 'board',
+    edition: '2010',
+    description: 'Priprema bankovnih računa i investicione trake za 2010.',
+    details: [
+      'Svaki igrač postavlja svoj marker bankovnog računa na početno polje na stazi Banco do Vinho (0 do 24).',
+      'Svaki igrač postavlja marker investicija na polje "0" na traci investicija (-2 do +3).',
+      'Pripremite zajedničku zalihu Bagos novčića.'
+    ]
+  },
+  {
+    id: 'setup-regions-2010',
+    title: '3. Regije u 2 Igrača (Igra se sa 7 Regija)',
+    category: 'board',
+    edition: '2010',
+    isTwoPlayerSpecial: true,
+    description: 'Priprema regija za 2 igrača u 2010.',
+    details: [
+      'Zvanična preporuka pravila za 2 igrača: Uklonite Setúbal (7) i Algarve (9) u kutiju.',
+      'Složite pločice vinograda za 7 regija sa cenom okrenutom nagore.',
+      'Stavite 2 Porto pločice u Douro regiju (regija 3).',
+      'Stavite sve Kockice Renomea u zajedničku zalihu.'
+    ]
+  },
+  {
+    id: 'setup-export-2010',
+    title: '4. Izvozna Zona (2-Player Ram)',
+    category: 'two_player_focus',
+    edition: '2010',
+    isTwoPlayerSpecial: true,
+    description: 'Postavite 2-player overlay preko Export zone.',
+    details: [
+      'Stavite 2-player ram preko Export zone (dostupna su samo polja unutar rama).',
+      'Za 2 igrača u sajmu se koriste bodovanja za 1. i 3. mesto!'
+    ]
+  },
+  {
+    id: 'setup-players-2010',
+    title: '5. Danijel & Ceca – Burad i Početna Imanja (2010)',
+    category: 'player_board',
+    edition: '2010',
+    isTwoPlayerSpecial: true,
+    description: 'Sva burad u ličnim zalihama (nema početnih buradi kod magnata!).',
+    details: [
+      'Za razliku od 2016, u 2010 NEMA početnih buradi postavljenih na magnate! Sva burad ostaju u ličnoj zalihi.',
+      'U 1. godini NIKO ne može slati burad kod Magnata.',
+      'Početni novac i banka postavljaju se prema standardnim pravilima za 2010 Reserve.',
+      'Svaki igrač bira 1 početno imanje, uzima vinograd i početno vino (za Ribatejo dobija farmera; za Dão podrum; za Lisboa vinariju).'
+    ]
+  }
+];
+
 export const RULES_CLARIFICATIONS: RuleClarification[] = [
+  // 2010-SPECIFIC & DIFFERENCES FIRST
+  {
+    id: 'diff-bank-rules-2010',
+    title: '🏛️ Banka Banco do Vinho & Akcija Bank (Samo u 2010)',
+    category: 'bank_economy',
+    edition: '2010',
+    isDifference: true,
+    question: 'Kako funkcioniše Banka u 2010 verziji i šta obuhvata akcija Bank na Quadrelu?',
+    answer: 'U 2010 Reserve, ekonomija je podeljena na Gotovinu (Bagos u ruci) i Bankovni račun (0-24 staza). Akcija Bank na Quadrelu omogućava izvođenje bilo koje od ove 3 operacije u bilo kom broju i redosledu:\n1. Podizanje gotovine: Pomerite marker računa unazad za 1 polje i uzmite 1 Bago gotovine. (Ako marker uđe na "-2 VP" polje, odmah gubite 2 VP!).\n2. Polaganje gotovine: Platite 1 Bago gotovine i pomerite marker računa unapred za 1 polje (maksimalno 24).\n3. Investiranje: Uložite Bagose da pomerite marker investicija udesno za 1 polje (cena piše na gornjoj ikoni).',
+    tip: 'RAZINVESTIRANJE (DIVESTING): Možete uraditi U BILO KOM TRENUTKU tokom svog poteza besplatno — pomerite marker investicija ulevo za 1 polje i uzmite gotovinu prikazanu na donjoj ikoni! U 2016 verziji Banka uopšte ne postoji.',
+    pageRef: '2010 Pravila str. 11, 12',
+    tags: ['banka', '2010', 'razlike', 'investicije', 'divest', 'gotovina', 'porez']
+  },
+  {
+    id: 'diff-maintenance-2010',
+    title: '⚠️ Faza Održavanja: Kamate i Plate Enologa (Samo u 2010)',
+    category: 'bank_economy',
+    edition: '2010',
+    isDifference: true,
+    question: 'Šta se tačno dešava u Fazi Održavanja (oznaka B) u 2010 Reserve verziji?',
+    answer: 'U 2010 Faza Održavanja zahteva 2 obavezna finansijska usklađivanja na bankovnom računu (NE u gotovini!):\na) Kamata na investicije: Pomerite marker na bankovnom računu napred ili nazad prema poziciji markera investicija (-2 do +3). Ako ne možete platiti negativnu kamatu: marker ide na "-2 VP" polje (gubite 2 VP) i MORATE trajno odbaciti 1 Vinariju (ili 1 Vinograd ako nemate vinariju) sa svoje table!\nb) Plate Enologa: Pomerite marker na bankovnom računu unazad za 1 polje po svakom enologu! Ako nemate novca da ih platite, gubite 2 VP i enolog se otpušta na tablu.',
+    tip: 'OGROMNA RAZLIKA OD 2016: U 2016 nema plata enologa niti kamata u održavanju — umesto toga u 2016 samo povlačite 1 bure iz Sales zone!',
+    pageRef: '2010 Pravila str. 15',
+    tags: ['održavanje', '2010', 'razlike', 'kamata', 'plata', 'enolog', 'kazna']
+  },
+  {
+    id: 'diff-farmers-2010',
+    title: '👨‍🌾 Farmeri u 2010: Zabrana kupovine & Ribatejo',
+    category: 'production',
+    edition: '2010',
+    isDifference: true,
+    question: 'Da li u 2010 Reserve verziji mogu kupovati Farmere kao u 2016?',
+    answer: 'NE! Zvanično pravilo 2010 Reserve (strana 7): "U 2010 Reserve, ne možete unajmiti Farmere; jedini način da ih dobijete je osnivanjem imanja u Ribatejo regiji!"\nAkcija na Quadrelu je strogo nazvana "Enologists", košta samo 1 Bago u gotovini po enologu (umesto 3), ali svaki enolog zahteva godišnju platu od 1 Bago u Fazi Održavanja.',
+    tip: 'U 2016 verziji farmeri se slobodno kupuju za 2 Bagosa na polju "Enologists & Farmers" i nikada ne traže platu.',
+    pageRef: '2010 Pravila str. 7',
+    tags: ['farmer', 'enolog', '2010', 'razlike', 'ribatejo', 'radnici']
+  },
+  {
+    id: 'diff-magnates-grid-2010',
+    title: '🍷 Magnati u 2010: Žrtvovanje vina za kretanje buradi',
+    category: 'fair_magnates',
+    edition: '2010',
+    isDifference: true,
+    question: 'Kako tačno funkcionišu Magnati na tabli 2010 Reserve?',
+    answer: 'U 2010 Magnati nisu pločice, već rešetka na tabli sa stazama:\n1. U 1. godini niko ne može poslati bure na Magnata.\n2. Od 2. godine, pri Press Release-u, ako vino ispunjava zahteve magnata, stavljate 1 ili 2 svoja bureta iz zaliha na njihove portrete (max 1 po magnatu).\n3. Korišćenje benefita: U bilo kom trenutku tokom svog poteza, možete ODBACITI 1 VINO sa svoje table da pomerite 1 svoje bure u istom redu na polje Dodatne Akcije ili na polje Multiplajera!\n4. Bure na polju dodatne akcije odmah izvodi tu akciju i može se kasnije pomeriti opet (žrtvovanjem novog vina). Bure na multiplajeru je trajno zaključano.',
+    tip: 'U 2016 verziji nema žrtvovanja vina niti kretanja buradi po rešetki — tamo se koriste zelene pločice akcija i ljubičaste pločice multiplajera.',
+    pageRef: '2010 Pravila str. 15, 18, 19',
+    tags: ['magnati', '2010', 'razlike', 'žrtvovanje vina', 'bure', 'rešetka']
+  },
+  {
+    id: 'diff-sales-retrieval-2010',
+    title: '🏪 Prodaja u 2010: Povlačenje buradi SAMO U PAROVIMA',
+    category: 'sales_export',
+    edition: '2010',
+    isDifference: true,
+    question: 'Kako se povlače burad iz Prodaje (Casa de Fados, Hotel, Enoteca) u 2010 verziji?',
+    answer: 'U 2010 Reserve važi strogo pravilo:\n• Nikada ne možete uzeti nazad samo 1 bure!\n• Burad se mogu povući SAMO U PAROVIMA (2 bureta odjednom) i OBA BURAD MORAJU BITI IZ ISTOG LOKALA!\n• Za svaki par buradi koji povučete, MORATE postaviti 2 Kocke Renomea u 2 različite regije po izboru na mapi!\n• Povlačenje se radi pre poteza ili pre Sajma.',
+    tip: 'U 2016 verziji svake godine u Održavanju igrač jednostavno uzima nazad 1 bure bez ikakvih parova i bez kockica renomea.',
+    pageRef: '2010 Pravila str. 10',
+    tags: ['prodaja', 'burad', 'parovi', '2010', 'razlike', 'renome']
+  },
+  {
+    id: 'diff-endgame-comparison',
+    category: 'end_game',
+    edition: 'both',
+    isDifference: true,
+    title: '🏆 Razlike na Kraju Igre: 2010 vs 2016 Završetak i Bodovanje',
+    question: 'Koje su tačne razlike između 2010 i 2016 na samom kraju partije?',
+    answer: 'Ključne razlike na kraju 6. godine:\n1. POSLEDNJI POTEZ:\n   • 2010: Nakon 3. sajma, igrači redom žrtvuju preostala vina da pomeraju burad na Magnat rešetki za akcije/multiplajere dok svi ne pasiraju.\n   • 2016: Svaki igrač odigrava još TAČNO 1 standardnu akciju na Quadrelu.\n2. PREOSTALA VINA:\n   • 2010: Vina koja ostanu na tabli vrede TAČNO 0 VP!\n   • 2016: Svako vino donosi floor(kvalitet / 2) VP.\n3. NOVAC:\n   • 2010: Samo Bankovni račun donosi VP (0 do 18 VP). Gotovina u ruci donosi 0 VP!\n   • 2016: Gotovina u ruci se boduje po tabeli (0 do 22 VP).\n4. TIE-BREAKER:\n   • 2010: Export burad -> Ukupno novca (Gotovina + Banka nakon divesta).\n   • 2016: Export burad -> Gotovina u ruci.',
+    tip: 'U 2010 pazite da pre kraja igre deponujete gotovinu u banku, jer gotovina u ruci ne donosi VP!',
+    pageRef: '2010 Pravila str. 20 / 2016 Pravila str. 16',
+    tags: ['kraj', 'bodovanje', 'razlike', '2010', '2016', 'poslednji potez', 'vina']
+  },
+
+  // COMMON RULES & ESSENTIAL CLARIFICATIONS
   {
     id: 'end-game-trigger',
     title: 'Trigger za kraj igre (Kada se igra završava?)',
     category: 'end_game',
+    edition: 'both',
     question: 'Koji je tačan trenutak i trigger za završetak igre?',
-    answer: 'Igra traje 6 godina (rundi). Na kraju 6. godine održava se 3. Sajam vina (Wine Tasting Fair). NAKON 3. sajma, marker runde se pomera na krug desno od ikone sajma. Tada svaki igrač igra JOŠ TAČNO JEDNU DODATNU AKCIJU na Quadrelu prema trenutnom redosledu poteza! Nakon te poslednje akcije igra se odmah završava i prelazi se na finalno bodovanje.',
-    tip: 'PAŽNJA: Pločice vinskih stručnjaka i magnata se NE okreću ponovo licem nagore nakon 3. sajma! U toj poslednjoj akciji možete iskoristiti samo one stručnjake i magnat pločice koje su vam već ostale okrenute licem nagore.',
-    pageRef: 'Strana 16 pravila',
+    answer: 'Igra traje 6 godina (rundi). Na kraju 6. godine održava se 3. Sajam vina (Wine Tasting Fair).\n• U 2016: Svaki igrač igra JOŠ TAČNO JEDNU DODATNU AKCIJU na Quadrelu!\n• U 2010: Svaki igrač može žrtvovati vina za kretanje buradi na Magnat rešetki dok svi ne pasiraju.\nNakon toga igra se odmah završava i prelazi se na finalno bodovanje.',
+    tip: 'Pločice vinskih stručnjaka se NE okreću ponovo licem nagore nakon 3. sajma!',
+    pageRef: 'Strana 16 (2016) / Strana 20 (2010)',
     tags: ['kraj', 'trigger', 'poslednja akcija', '6. godina', 'sajam']
   },
   {
     id: 'tie-breaker-official',
-    title: 'Zvanični Tie-Breaker (Nerešen rezultat)',
+    title: 'Zvanični Tie-Breaker (Nerešen rezultat u obe verzije)',
     category: 'end_game',
+    edition: 'both',
     question: 'Šta se dešava ako Danijel i Ceca imaju isti broj pobedničkih poena (VP)?',
-    answer: 'Pobednik je igrač sa više ukupnih pobedničkih poena (VP). U slučaju nerešenog rezultata, primenjuje se sledeća stroga zvanična hijerarhija:\n1. Pobeđuje igrač koji ima VIŠE BURADI U EXPORT ZONI (Izvozno područje)!\n2. Ako je i dalje nerešeno, pobeđuje igrač sa VIŠE NOVCA (preostali Bagos).',
-    tip: 'Za izjednačenja u sajmu (Fair Points) poeni se sabiraju i dele na pola zaokruženo nadole. Za izjednačenja u kolonama izvoza (zemlje uvoznice) bodovi na vrhu kolone se takođe dele na pola zaokruženo nadole.',
-    pageRef: 'Strana 16 pravila',
+    answer: 'Pobednik je igrač sa više ukupnih pobedničkih poena (VP). U slučaju nerešenog rezultata:\n1. Pobeđuje igrač koji ima VIŠE BURADI U EXPORT ZONI!\n2. Ako je i dalje nerešeno:\n   • U 2010: Pobeđuje igrač sa više novca (GOTOVINA + BANKOVNI RAČUN) nakon maksimalnog razinvestiranja!\n   • U 2016: Pobeđuje igrač sa više GOTOVINE (Bagos u ruci).',
+    tip: 'Za izjednačenja u sajmu (Fair Points) poeni se sabiraju i dele na pola zaokruženo nadole.',
+    pageRef: 'Strana 20 (2010) / Strana 16 (2016)',
     tags: ['tie breaker', 'nerešeno', 'pobednik', 'izjednačenje', 'burad']
   },
   {
     id: 'two-player-fair',
     title: 'Sajam u 2 igrača (Danijel i Ceca)',
     category: 'two_player',
+    edition: 'both',
     question: 'Kako se boduje Sajam vina kada igraju samo 2 igrača?',
     answer: 'U partiji za 2 igrača primenjuje se posebno pravilo: KORISTE SE BODOVANJA ZA 1. I 3. MESTO! Drugo mesto se preskače.\n- 1. Sajam (Godina 3): 1. mesto dobija 9 VP, a 2. igrač dobija 3 VP!\n- 2. Sajam (Godina 5): 1. mesto dobija 12 VP, a 2. igrač dobija 4 VP!\n- 3. Sajam (Godina 6): 1. mesto dobija 15 VP, a 2. igrač dobija 5 VP!\nAko su izjednačeni po bodovima sajma, sabiraju se bodovi za 1. i 3. mesto i dele sa 2 (zaokruženo nadole): 6 VP, 8 VP i 10 VP!',
     tip: 'Fair bodovi se NIKADA ne resetuju nakon sajma! Oni se kumulativno sabiraju iz sajma u sajam tokom cele partije.',
-    pageRef: 'Strana 15 pravila',
+    pageRef: 'Strana 17 (2010) / Strana 15 (2016)',
     tags: ['2 igrača', 'sajam', 'danijel', 'ceca', 'fair', 'bodovanje']
   },
   {
     id: 'two-player-export',
     title: 'Izvoz u 2 igrača (2-player Frame)',
     category: 'two_player',
+    edition: 'both',
     question: 'Koja polja za izvoz su dostupna u 2 igrača?',
     answer: 'U igri za 2 igrača dostupna su ISKLJUČIVO polja koja se nalaze unutar posebnog rama za 2 igrača (2-player frame). Sva ostala polja su blokirana. Za svako izvezeno vino igrač odmah dobija VP naznačene na polju gde postavlja bure.',
     tip: 'Na kraju igre igrač sa najviše buradi u koloni (zemlji) dobija dodatne VP sa vrha te kolone. Ako Danijel i Ceca imaju jednak broj buradi u toj koloni, dele bodove na pola (zaokruženo nadole).',
-    pageRef: 'Strana 10 pravila',
+    pageRef: 'Strana 11 (2010) / Strana 10 (2016)',
     tags: ['2 igrača', 'izvoz', 'export', 'ram', 'većina']
   },
   {
     id: 'quadrel-movement-costs',
     title: 'Troškovi kretanja na Quadrelu (Kada se plaća Bago?)',
     category: 'quadrel',
+    edition: 'both',
     question: 'Koliko košta pomeranje akcijskog markera po 3x3 mreži (Quadrelu)?',
-    answer: 'Pravila kretanja su precizna i kumulativna:\n1. Susedno polje (ortogonalno ili dijagonalno): BESPLATNO (0 Bagosa).\n2. Nesusedno polje (udaljeno): Plaća se 1 BAGO u banku (zajedničku zalihu).\n3. Ako se na odredišnom polju već nalazi marker drugog igrača: Plaća se 1 BAGO TOM IGRAČU!\n4. Ako se na odredišnom polju nalazi beli marker Godine/Poreza: Plaća se 1 BAGO u banku.\nSvi ovi troškovi se sabiraju!',
+    answer: 'Pravila kretanja su precizna i kumulativna:\n1. Susedno polje (ortogonalno ili dijagonalno): BESPLATNO (0 Bagosa).\n2. Nesusedno polje (udaljeno): Plaća se 1 BAGO u opštu zalihu.\n3. Ako se na odredišnom polju već nalazi marker drugog igrača: Plaća se 1 BAGO TOM IGRAČU!\n4. Ako se na odredišnom polju nalazi beli marker Godine/Poreza: Plaća se 1 BAGO u opštu zalihu.\nSvi ovi troškovi se sabiraju!',
     tip: 'IZUZETAK: Polje Pass / Press Release (Sajam/Propusti) je UVEK POTPUNO BESPLATNO za kretanje, čak i ako je protivnički marker već tamo!',
-    pageRef: 'Strana 4 pravila',
+    pageRef: 'Strana 4 (obe verzije)',
     tags: ['kretanje', 'quadrel', 'trošak', 'bago', 'porez']
   },
   {
     id: 'stay-same-quadrel',
     title: 'Da li smem ostati na istom akcijskom polju?',
     category: 'quadrel',
+    edition: 'both',
     question: 'Mogu li ponovo izvršiti istu akciju bez pomeranja markera?',
     answer: 'NE! Pravilo glasi: Ne možete ostati na istom polju, morate se pomeriti na novo polje. Takođe, ako nemate novca da platite trošak kretanja i samu akciju, ne smete preći na to polje.\nJEDINI IZUZETAK: Ako ste već na polju Pass / Press Release i nemate mogućnost da pređete ni na jedno drugo polje, smete ostati na njemu i pasirati.',
-    tip: 'Ako želite istu akciju dva puta zaredom, možete upotrebiti odgovarajuću Magnat akcionu pločicu pre ili posle redovnog pomeranja.',
-    pageRef: 'Strana 4 pravila',
+    tip: 'Ako želite istu akciju dva puta zaredom, u 2010 možete upotrebiti Magnat dodatnu akciju, a u 2016 odgovarajuću Magnat akcionu pločicu.',
+    pageRef: 'Strana 4 (obe verzije)',
     tags: ['quadrel', 'isto polje', 'ostanak', 'zabrana']
   },
   {
     id: 'wine-quality-formula',
     title: 'Kvalitet Vina (Wine Quality) pri Berbi',
     category: 'production',
+    edition: 'both',
     question: 'Kako se tačno računa kvalitet vina koje se proizvede na imanju?',
     answer: 'Kvalitet vina (ikona bureta sa brojem) se računa u Fazi Proizvodnje za svako imanje sa bar 1 vinogradom:\n+ 2 poena za SVAKI vinograd na imanju (max 2 vinograda = +4)\n+ 1 poen za svakog farmera na imanju\n+ 1 poen za svaku vinariju na imanju (max 2 vinarije = +2)\n+ 2 poena za svakog enologa na imanju\n+ 3 poena ako proizvodite Porto vino (u Douro regiji uz uslove)\n± Vrednost vremenskih prilika sa Vintage pločice (-2 do +2).',
     tip: 'VAŽNO: Ako je konačni kvalitet 0 ili negativan, na tom imanju se NE PROIZVODI VINO (nema pločice kvaliteta 0)!',
-    pageRef: 'Strana 8 pravila',
+    pageRef: 'Strana 8 (2010) / Strana 8 (2016)',
     tags: ['kvalitet', 'berba', 'proizvodnja', 'formula', 'vreme']
   },
   {
     id: 'wine-value-formula',
     title: 'Vrednost Vina (Wine Value) za Prodaju/Izvoz/Sajam',
     category: 'wine_value',
+    edition: 'both',
     question: 'Koja je razlika između Kvaliteta i Vrednosti vina, i kako se računa Vrednost?',
     answer: 'Kvalitet je broj na pločici vina. VREDNOST VINA (krug sa buretom unutra) se određuje u trenutku kada vino Prodajete, Izvozite ili Šaljete na Sajam:\n= Kvalitet vina (broj na pločici)\n+ 1, 3, ili 5 poena za godine starenja u Podrumu (Cellar)\n+ (opciono) 1 ili 2 poena iz Kockica Renomea te regije: uklonite 1 ili 2 kocke sa table regije i dodajte +1 po kocki (+2 po kocki ako je vino iz Alenteja, regija 8!)\n+ 1 poen ako je vino iz regije Algarve (regija 9).',
     tip: 'Kocke renomea regije SMETE ukloniti SAMO ako su vam stvarno potrebne da dostignete traženu vrednost slota. Ne smete ih uklanjati samo da biste napakostili protivniku!',
-    pageRef: 'Strana 9 pravila',
+    pageRef: 'Strana 9 (obe verzije)',
     tags: ['vrednost', 'wine value', 'kockice', 'renome', 'podrum', 'alentejo']
   },
   {
     id: 'aging-and-discard',
     title: 'Starenje vina i gubljenje vina (Aging & Warehouses)',
     category: 'cellars',
+    edition: 'both',
     question: 'Kako vina stare i šta se dešava ako izađu iz skladišta ili podruma?',
     answer: 'Na početku Faze Proizvodnje svake godine, sva postojeća vina u skladištima i podrumima pomeraju se za 1 polje UDESNO (stare za 1 godinu). Tek NAKON toga nova vina ulaze u najlevlji (prvi) slot. Ako vino mora da se pomeri sa krajnjeg desnog slota i nema gde da ode, VINO JE POKVARENO I TRAJNO SE ODBACUJE!',
-    tip: 'Skladište (Warehouse) ima mesta za starenje do 2 godine. Kupovinom Podruma (Cellar) pokrivate skladište i proširujete kapacitet starenja (do 4 slota), što dramatično povećava vrednost vina (+1, +3, +5 vrednosti)!',
-    pageRef: 'Strana 8, 9 pravila',
+    tip: 'Skladište ima mesta za 2 godine starenja. Podrum (Cellar) pokriva skladište i proširuje ga na 4 slota (+1, +3, +5 vrednosti)!',
+    pageRef: 'Strana 8, 9 (obe verzije)',
     tags: ['starenje', 'skladište', 'podrum', 'odbacivanje', 'propast']
   },
   {
     id: 'press-release-timing',
     title: 'Press Release: Zašto i kada ga uraditi ranije?',
     category: 'fair_magnates',
+    edition: 'both',
     question: 'Zašto bih trošio akciju na Press Release tokom godine, ako mogu besplatno na Sajmu?',
-    answer: 'Tokom godine možete otići na polje Pass/Press Release i prijaviti vino za predstojeći sajam. Prednosti ranog prijavljivanja:\n1. Bira se najbolji Fair Booth (štand na sajmu) pre nego što ga Ceca ili Danijel zauzme (bonusi: biranje magnata prvi, besplatan stručnjak, 3 bagosa, ili +3 fair poena).\n2. ODMAH se uzimaju dragocena burad od Magnata (do 2 bureta), koja su vam očajnički potrebna za prodaju i izvoz!\n3. Možete iskoristiti vinske stručnjake koji odgovaraju trenutnoj berbanskoj pločici za dodatne Fair poene.',
+    answer: 'Tokom godine možete otići na polje Pass/Press Release i prijaviti vino za predstojeći sajam. Prednosti:\n1. Bira se najbolji Fair Booth (štand) pre nego što ga protivnik zauzme (bonusi: biranje magnata, stručnjak, 3 bagosa ili +2/3 fair poena).\n2. Ranije impresionirate Magnate i omogućavate bonus akcije/burad!\n3. Dobijate poene za vino veće od 9 (Wine Value - 9 = Fair Points).',
     tip: 'Ako ne uradite Press Release tokom godine, MORATE ga uraditi u samoj fazi Sajma kao besplatnu akciju.',
-    pageRef: 'Strana 12, 13 pravila',
+    pageRef: 'Strana 14 (2010) / Strana 12 (2016)',
     tags: ['press release', 'sajam', 'štand', 'burad', 'magnati']
-  },
-  {
-    id: 'magnates-barrels',
-    title: 'Magnati i Uzimanje Buradi',
-    category: 'fair_magnates',
-    question: 'Kako se uzimaju burad od tri Magnata (Anabela, Bruno, Carolina)?',
-    answer: 'Kada prijavite vino za sajam (kroz Press Release):\n- Anabela traži BOJU vina (belo ili crveno po Vintage pločici)\n- Bruno traži MINIMALNU VREDNOST vina (npr. vrednost bar 8)\n- Carolina traži VINO IZ ODREĐENIH REGIJA (npr. regije 1, 4, 7 ili 8)\nAko vaše vino ispunjava uslove, možete uzeti do 2 VAŠA BURETA iz prostora magnata u vaše lične zalihe (najviše 1 bure od svakog magnata). Čak i ako vino ispunjava uslove sva 3 magnata, limit je 2 bureta!',
-    tip: 'Pošto ima 3 sajma u igri, tokom cele partije imate tačno 3 prilike da oslobodite svoja burad od magnata!',
-    pageRef: 'Strana 13 pravila',
-    tags: ['magnati', 'anabela', 'bruno', 'carolina', 'burad']
-  },
-  {
-    id: 'maintenance-barrel-recall',
-    title: 'Faza Održavanja (Maintenance): Vraćanje buradi iz Prodaje',
-    category: 'sales_export',
-    question: 'Kada i kako mi se vraćaju burad poslata u lokalne lokale (Casa de Fados, Hotel, Enoteca)?',
-    answer: 'U svakoj godini, nakon što su odigrane obe akcije, nastupa Faza Održavanja (označena sa "B" na stazi godine). Svaki igrač MORA uzeti nazad TAČNO JEDNO svoje bure iz Sales zone (ako ih tamo ima) i vratiti ga u svoje zalihe.',
-    tip: 'Burad u EXPORT zoni (izvoz) se NIKADA ne vraćaju u zalihe (ostaju tamo trajno i boduju većine na kraju igre, osim u slučaju posebnog vinskog stručnjaka)! Burad na Multiplier pločicama takođe ostaju tamo.',
-    pageRef: 'Strana 13 pravila',
-    tags: ['održavanje', 'prodaja', 'burad', 'zalihe', 'povratak']
   },
   {
     id: 'workers-movement',
     title: 'Preraspodela Enologa i Farmera',
     category: 'production',
+    edition: 'both',
     question: 'Mogu li da premeštam radnike sa jednog imanja na drugo?',
     answer: 'DA! U Fazi Proizvodnje, u koraku 2 (Redistribute employees), pre nego što izračunate kvalitet vina za novu berbu, možete besplatno premestiti svoje enologe i farmere na bilo koja vaša imanja po želji!\nOgraničenja: Svaka vinarija može ugostiti najviše 1 enologa, a svaki vinograd najviše 1 farmera.',
-    tip: 'Ovo je ključna taktika: premeštajte sve radnike na imanje koje trenutno ima najbolje vremenske prilike ili gde želite elitno vino za sajam!',
-    pageRef: 'Strana 14 pravila',
+    tip: 'Premeštajte radnike na imanje koje ima najbolje vremenske prilike ili gde spremate vino za sledeći sajam!',
+    pageRef: 'Strana 16 (2010) / Strana 14 (2016)',
     tags: ['radnici', 'enolog', 'farmer', 'premestanje', 'proizvodnja']
-  },
-  {
-    id: 'multiplier-tiles-barrel-rule',
-    title: 'Multiplier (Množilac) pločice na kraju igre',
-    category: 'end_game',
-    question: 'Koji je najvažniji uslov da bi Magnat Multiplier pločica donela poene na kraju igre?',
-    answer: 'KRITIČNO: Multiplier pločica donosi poene na kraju igre SAMO ako se na njoj nalazi vaše bure! Prilikom kupovine pločice na sajmu morali ste postaviti bure iz zaliha. Ako na pločici nema bureta na kraju igre, ona vredi tačno 0 VP!',
-    tip: 'Takođe obratite pažnju na maksimalne limite poena na pločicama (npr. max 16 VP za pločicu vina).',
-    pageRef: 'Strana 15, 16 pravila',
-    tags: ['multiplier', 'množilac', 'bure', 'kraj', 'magnat']
   }
 ];

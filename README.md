@@ -42,18 +42,14 @@ Mobilni asistent i prateća aplikacija za društvenu igru **Vinhos Deluxe Editio
 ## 🚀 Objava na GitHub Pages (GitHub Actions)
 
 Aplikacija je pripremljena sa automatskim CI/CD deploymentom:
-- Workflow fajl: `.github/workflows/deploy.yml`
+- Workflow fajl: `.github/workflows/deploy.yml` (Node 22 LTS, automatski `npm install` bez grešaka oko lockfile-a)
 - Vite konfiguracija: `base: './'`
 
-### Koraci za objavu:
+### Ažuriranje koda na GitHub-u:
 ```bash
-# 1. Povežite repozitorijum
-git init
 git add .
-git commit -m "feat: Vinhos Deluxe companion for Danijel and Ceca"
-git branch -M main
-git remote add origin https://github.com/TVOJE_IME/vinhos-deluxe-companion.git
-git push -u origin main
+git commit -m "fix: update github actions workflow for Node 22 and clean install"
+git push origin main
 ```
 
-Nakon push-a, na GitHub-u u podešavanjima repozitorijuma (`Settings` → `Pages` → `Source`) izaberite **GitHub Actions**. Aplikacija će automatski biti objavljena na GitHub Pages!
+Nakon push-a, GitHub Actions će automatski pokrenuti workflow i uspešno objaviti aplikaciju na GitHub Pages! U podešavanjima repozitorijuma (`Settings` → `Pages` → `Source`) proverite da je izabrano **GitHub Actions**.
