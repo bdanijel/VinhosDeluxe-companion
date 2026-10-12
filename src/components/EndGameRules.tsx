@@ -11,7 +11,7 @@ export const EndGameRules: React.FC<EndGameRulesProps> = ({
   edition = '2010',
   onSelectEdition 
 }) => {
-  const [currentEdition, setCurrentEdition] = useState<GameEdition>(edition);
+  const currentEdition = edition;
 
   // Tie-breaker interactive quick resolver simulator
   const [dVP, setDVP] = useState<number>(75);
@@ -25,7 +25,6 @@ export const EndGameRules: React.FC<EndGameRulesProps> = ({
   const [cBank, setCBank] = useState<number>(9);
 
   const handleEditionChange = (ed: GameEdition) => {
-    setCurrentEdition(ed);
     if (onSelectEdition) onSelectEdition(ed);
   };
 

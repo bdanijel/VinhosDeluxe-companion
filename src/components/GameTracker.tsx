@@ -15,7 +15,8 @@ import {
   HelpCircle,
   Clock,
   Landmark,
-  Scale
+  Scale,
+  MapPin
 } from 'lucide-react';
 import { FAIR_SCORINGS } from '../data/rulesData';
 import { GameEdition } from '../types';
@@ -24,6 +25,7 @@ interface GameTrackerProps {
   onOpenRules?: () => void;
   onOpenCalculator?: () => void;
   onOpenWineCalc?: () => void;
+  onOpenRegions?: () => void;
   edition?: GameEdition;
   onSelectEdition?: (edition: GameEdition) => void;
 }
@@ -32,10 +34,11 @@ export const GameTracker: React.FC<GameTrackerProps> = ({
   onOpenRules,
   onOpenCalculator,
   onOpenWineCalc,
+  onOpenRegions,
   edition = '2010',
   onSelectEdition
 }) => {
-  const [currentEdition, setCurrentEdition] = useState<GameEdition>(edition);
+  const currentEdition = edition;
 
   // Current game state
   const [year, setYear] = useState<number>(() => {
@@ -84,7 +87,6 @@ export const GameTracker: React.FC<GameTrackerProps> = ({
   });
 
   const handleEditionChange = (ed: GameEdition) => {
-    setCurrentEdition(ed);
     if (onSelectEdition) onSelectEdition(ed);
   };
 
@@ -257,6 +259,37 @@ export const GameTracker: React.FC<GameTrackerProps> = ({
             );
           })}
         </div>
+      </div>
+
+      {/* Quick Companion Tools Bar */}
+      <div className="grid grid-cols-3 gap-1.5 text-xs">
+        {onOpenRegions && (
+          <button
+            onClick={onOpenRegions}
+            className="py-1.5 px-2 rounded-xl bg-stone-900/90 hover:bg-stone-800 text-amber-300 border border-stone-800 flex items-center justify-center gap-1.5 transition font-semibold shadow-sm"
+          >
+            <MapPin className="w-3.5 h-3.5 text-amber-400" />
+            <span className="text-[10.5px]">Regije & Bonusi</span>
+          </button>
+        )}
+        {onOpenWineCalc && (
+          <button
+            onClick={onOpenWineCalc}
+            className="py-1.5 px-2 rounded-xl bg-stone-900/90 hover:bg-stone-800 text-stone-300 hover:text-white border border-stone-800 flex items-center justify-center gap-1.5 transition font-semibold shadow-sm"
+          >
+            <Wine className="w-3.5 h-3.5 text-rose-400" />
+            <span className="text-[10.5px]">Kalkulator Vina</span>
+          </button>
+        )}
+        {onOpenRules && (
+          <button
+            onClick={onOpenRules}
+            className="py-1.5 px-2 rounded-xl bg-stone-900/90 hover:bg-stone-800 text-stone-300 hover:text-white border border-stone-800 flex items-center justify-center gap-1.5 transition font-semibold shadow-sm"
+          >
+            <HelpCircle className="w-3.5 h-3.5 text-amber-400" />
+            <span className="text-[10.5px]">Pravila</span>
+          </button>
+        )}
       </div>
 
       {/* Active Phase Card */}

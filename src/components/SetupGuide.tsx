@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
 import { SETUP_STEPS, SETUP_STEPS_2010 } from '../data/rulesData';
 import { GameEdition } from '../types';
-import { CheckSquare, Square, Wine, Users, Sparkles, AlertCircle, RefreshCw, Scale } from 'lucide-react';
+import { CheckSquare, Square, Wine, Users, Sparkles, AlertCircle, RefreshCw, Scale, MapPin } from 'lucide-react';
 
 interface SetupGuideProps {
   edition?: GameEdition;
   onSelectEdition?: (edition: GameEdition) => void;
+  onOpenRegions?: () => void;
 }
 
 export const SetupGuide: React.FC<SetupGuideProps> = ({
   edition = '2010',
-  onSelectEdition
+  onSelectEdition,
+  onOpenRegions
 }) => {
-  const [currentEdition, setCurrentEdition] = useState<GameEdition>(edition);
+  const currentEdition = edition;
 
   const [checkedSteps, setCheckedSteps] = useState<Record<string, boolean>>(() => {
     const saved = localStorage.getItem('vinhos_setup_checks');
@@ -20,7 +22,6 @@ export const SetupGuide: React.FC<SetupGuideProps> = ({
   });
 
   const handleEditionChange = (ed: GameEdition) => {
-    setCurrentEdition(ed);
     if (onSelectEdition) onSelectEdition(ed);
   };
 
@@ -194,6 +195,22 @@ export const SetupGuide: React.FC<SetupGuideProps> = ({
                       </li>
                     ))}
                   </ul>
+
+                  {(step.id.includes('regions') || step.id.includes('vineyard')) && onOpenRegions && (
+                    <div className="pt-2">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onOpenRegions();
+                        }}
+                        className="w-full py-2 px-3 rounded-xl bg-amber-600/20 hover:bg-amber-600/30 text-amber-300 border border-amber-500/40 font-bold text-xs flex items-center justify-center gap-1.5 transition shadow-sm"
+                      >
+                        <MapPin className="w-3.5 h-3.5 text-amber-400" />
+                        <span>Pogledaj spisak 9 regija i njihove bonuse →</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

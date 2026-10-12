@@ -10,7 +10,7 @@ import { WineCalculator } from './components/WineCalculator';
 import { RulesSearch } from './components/RulesSearch';
 import { VersionComparison } from './components/VersionComparison';
 import { GitHubGuide } from './components/GitHubGuideModal';
-import { Wine, Github, Trophy, Scale, Landmark, Sparkles } from 'lucide-react';
+import { Wine, Github, Trophy, Scale, Landmark, Sparkles, MapPin } from 'lucide-react';
 import { GameEdition } from './types';
 
 export default function App() {
@@ -72,6 +72,20 @@ export default function App() {
 
             {/* Quick Header Action Buttons */}
             <div className="flex items-center gap-1">
+              {/* Quick Regions Button */}
+              <button
+                onClick={() => setCurrentTab('regions')}
+                title="9 Regija & Bonusi"
+                className={`px-2 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 transition ${
+                  currentTab === 'regions'
+                    ? 'bg-amber-600 text-stone-950 font-bold shadow-[0_0_8px_#d97706]'
+                    : 'bg-stone-900 text-stone-300 hover:bg-stone-800 border border-stone-800'
+                }`}
+              >
+                <MapPin className="w-3 h-3 text-amber-400" />
+                <span className="text-[10px] font-bold">Regije</span>
+              </button>
+
               {/* Quick Differences Button */}
               <button
                 onClick={() => setCurrentTab('differences')}
@@ -155,12 +169,14 @@ export default function App() {
             onOpenCalculator={() => setCurrentTab('calculator')}
             onOpenRules={() => setCurrentTab('rules')}
             onOpenWineCalc={() => setCurrentTab('winecalc')}
+            onOpenRegions={() => setCurrentTab('regions')}
           />
         )}
         {currentTab === 'actions' && (
           <ActionsGuide 
             edition={selectedEdition} 
-            onSelectEdition={handleEditionChange} 
+            onSelectEdition={handleEditionChange}
+            onOpenRegions={() => setCurrentTab('regions')}
           />
         )}
         {currentTab === 'differences' && (
@@ -170,7 +186,12 @@ export default function App() {
           />
         )}
         {currentTab === 'regions' && <RegionsGuide />}
-        {currentTab === 'rules' && <RulesSearch edition={selectedEdition} />}
+        {currentTab === 'rules' && (
+          <RulesSearch 
+            edition={selectedEdition} 
+            onSelectEdition={handleEditionChange} 
+          />
+        )}
         {currentTab === 'calculator' && (
           <ScoreCalculator 
             edition={selectedEdition} 
@@ -186,10 +207,16 @@ export default function App() {
         {currentTab === 'setup' && (
           <SetupGuide 
             edition={selectedEdition} 
+            onSelectEdition={handleEditionChange}
+            onOpenRegions={() => setCurrentTab('regions')}
+          />
+        )}
+        {currentTab === 'winecalc' && (
+          <WineCalculator 
+            edition={selectedEdition} 
             onSelectEdition={handleEditionChange} 
           />
         )}
-        {currentTab === 'winecalc' && <WineCalculator edition={selectedEdition} />}
         {currentTab === 'github' && <GitHubGuide />}
       </main>
 

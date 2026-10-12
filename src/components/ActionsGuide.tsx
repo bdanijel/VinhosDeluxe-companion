@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Wine, 
   Store, 
@@ -13,7 +13,8 @@ import {
   AlertTriangle,
   ArrowRight,
   Landmark,
-  Scale
+  Scale,
+  MapPin
 } from 'lucide-react';
 import { GameEdition } from '../types';
 
@@ -426,20 +427,39 @@ export const ACTIONS_2010: QuadrelAction[] = [
 interface ActionsGuideProps {
   edition?: GameEdition;
   onSelectEdition?: (edition: GameEdition) => void;
+  onOpenRegions?: () => void;
 }
 
 export const ActionsGuide: React.FC<ActionsGuideProps> = ({ 
   edition = '2010',
-  onSelectEdition 
+  onSelectEdition,
+  onOpenRegions
 }) => {
-  const [currentEdition, setCurrentEdition] = useState<GameEdition>(edition);
+  const currentEdition = edition;
   const [selectedActionId, setSelectedActionId] = useState<string>(
-    currentEdition === '2010' ? 'vineyards_2010' : 'vineyards'
+    edition === '2010' ? 'vineyards_2010' : 'vineyards'
   );
   const [filterCategory, setFilterCategory] = useState<string>('all');
 
+  // Sync selectedActionId when edition prop changes (e.g. from top bar)
+  useEffect(() => {
+    if (edition === '2010') {
+      if (!selectedActionId.endsWith('_2010')) {
+        const mapped = selectedActionId + '_2010';
+        const exists = ACTIONS_2010.some(a => a.id === mapped);
+        setSelectedActionId(exists ? mapped : 'vineyards_2010');
+      }
+    } else {
+      if (selectedActionId.endsWith('_2010')) {
+        const unmapped = selectedActionId.replace('_2010', '');
+        const mapped = unmapped === 'enologists' ? 'enologists_farmers' : unmapped === 'bank' ? 'vineyards' : unmapped;
+        const exists = ACTIONS_2016.some(a => a.id === mapped);
+        setSelectedActionId(exists ? mapped : 'vineyards');
+      }
+    }
+  }, [edition]);
+
   const handleEditionChange = (newEdition: GameEdition) => {
-    setCurrentEdition(newEdition);
     if (onSelectEdition) onSelectEdition(newEdition);
     setSelectedActionId(newEdition === '2010' ? 'vineyards_2010' : 'vineyards');
   };
@@ -864,6 +884,16 @@ export const ActionsGuide: React.FC<ActionsGuideProps> = ({
                 <div key={idx}>• {tip}</div>
               ))}
             </div>
+          )}
+
+          {selectedAction.id.includes('vineyard') && onOpenRegions && (
+            <button
+              onClick={onOpenRegions}
+              className="w-full py-2.5 px-3 rounded-xl bg-amber-600/20 hover:bg-amber-600/30 text-amber-300 border border-amber-500/40 font-bold text-xs flex items-center justify-center gap-2 transition shadow-sm"
+            >
+              <MapPin className="w-4 h-4 text-amber-400" />
+              <span>Pogledaj spisak svih 9 regija i njihove bonuse →</span>
+            </button>
           )}
         </div>
       )}

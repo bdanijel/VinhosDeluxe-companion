@@ -12,7 +12,7 @@ export const ScoreCalculator: React.FC<ScoreCalculatorProps> = ({
   edition = '2010',
   onSelectEdition
 }) => {
-  const [currentEdition, setCurrentEdition] = useState<GameEdition>(edition);
+  const currentEdition = edition;
 
   // Shared column majorities (1 to 5)
   // Standard values for column majorities: Col 1 (14 VP), Col 2 (12 VP), Col 3 (10 VP), Col 4 (8 VP), Col 5 (6 VP)
@@ -49,7 +49,6 @@ export const ScoreCalculator: React.FC<ScoreCalculatorProps> = ({
   const [cMultiplierVP, setCMultiplierVP] = useState<number>(12);
 
   const handleEditionChange = (ed: GameEdition) => {
-    setCurrentEdition(ed);
     if (onSelectEdition) onSelectEdition(ed);
   };
 

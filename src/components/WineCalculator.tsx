@@ -4,10 +4,18 @@ import { GameEdition } from '../types';
 
 interface WineCalculatorProps {
   edition?: GameEdition;
+  onSelectEdition?: (edition: GameEdition) => void;
 }
 
-export const WineCalculator: React.FC<WineCalculatorProps> = ({ edition = '2010' }) => {
-  const [currentEdition, setCurrentEdition] = useState<GameEdition>(edition);
+export const WineCalculator: React.FC<WineCalculatorProps> = ({ 
+  edition = '2010',
+  onSelectEdition
+}) => {
+  const currentEdition = edition;
+
+  const handleEditionChange = (ed: GameEdition) => {
+    if (onSelectEdition) onSelectEdition(ed);
+  };
 
   // Quality calculator state
   const [vineyards, setVineyards] = useState<number>(1);
@@ -69,7 +77,7 @@ export const WineCalculator: React.FC<WineCalculatorProps> = ({ edition = '2010'
         {/* Edition Pill Selector */}
         <div className="grid grid-cols-2 gap-2 bg-stone-950/80 p-1 rounded-xl border border-stone-800">
           <button
-            onClick={() => setCurrentEdition('2010')}
+            onClick={() => handleEditionChange('2010')}
             className={`py-1 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 ${
               currentEdition === '2010'
                 ? 'bg-rose-700 text-white shadow-[0_0_8px_#be123c]'
@@ -80,7 +88,7 @@ export const WineCalculator: React.FC<WineCalculatorProps> = ({ edition = '2010'
             <span>2010 Reserve</span>
           </button>
           <button
-            onClick={() => setCurrentEdition('2016')}
+            onClick={() => handleEditionChange('2016')}
             className={`py-1 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 ${
               currentEdition === '2016'
                 ? 'bg-amber-600 text-white shadow-[0_0_8px_#d97706]'

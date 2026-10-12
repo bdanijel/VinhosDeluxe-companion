@@ -1,16 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { RULES_CLARIFICATIONS } from '../data/rulesData';
 import { GameEdition } from '../types';
 import { Search, X, BookOpen, AlertCircle, Sparkles, Filter, ChevronDown, ChevronUp, Scale, Landmark } from 'lucide-react';
 
 interface RulesSearchProps {
   edition?: GameEdition;
+  onSelectEdition?: (edition: GameEdition) => void;
 }
 
-export const RulesSearch: React.FC<RulesSearchProps> = ({ edition = '2010' }) => {
+export const RulesSearch: React.FC<RulesSearchProps> = ({ 
+  edition = '2010',
+  onSelectEdition
+}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [selectedEditionFilter, setSelectedEditionFilter] = useState<'all' | '2010' | '2016' | 'diff'>('all');
+  const [selectedEditionFilter, setSelectedEditionFilter] = useState<'all' | '2010' | '2016' | 'diff'>(edition);
+
+  // Sync filter when edition prop changes from top bar
+  useEffect(() => {
+    setSelectedEditionFilter(edition);
+  }, [edition]);
+
+  const handleFilterClick = (filterId: 'all' | '2010' | '2016' | 'diff') => {
+    setSelectedEditionFilter(filterId);
+    if ((filterId === '2010' || filterId === '2016') && onSelectEdition) {
+      onSelectEdition(filterId);
+    }
+  };
   const [expandedId, setExpandedId] = useState<string | null>(RULES_CLARIFICATIONS[0]?.id || null);
 
   const categories = [
@@ -88,7 +104,7 @@ export const RulesSearch: React.FC<RulesSearchProps> = ({ edition = '2010' }) =>
           ].map(ed => (
             <button
               key={ed.id}
-              onClick={() => setSelectedEditionFilter(ed.id)}
+              onClick={() => handleFilterClick(ed.id)}
               className={`py-1 rounded-lg text-[10.5px] font-bold transition text-center truncate ${
                 selectedEditionFilter === ed.id
                   ? ed.id === '2010' ? 'bg-rose-700 text-white shadow-[0_0_8px_#be123c]'

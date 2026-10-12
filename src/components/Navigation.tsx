@@ -21,7 +21,8 @@ export const Navigation: React.FC<NavigationProps> = ({ currentTab, onSelectTab 
   const tabs = [
     { id: 'tracker' as TabType, label: 'Partija', icon: Compass },
     { id: 'actions' as TabType, label: 'Akcije', icon: Grid3X3 },
-    { id: 'differences' as TabType, label: '2010 vs 2016', icon: Scale },
+    { id: 'regions' as TabType, label: 'Regije', icon: MapPin },
+    { id: 'differences' as TabType, label: 'Razlike', icon: Scale },
     { id: 'rules' as TabType, label: 'Pravila', icon: Search },
     { id: 'calculator' as TabType, label: 'Kalkulator', icon: Calculator },
     { id: 'setup' as TabType, label: 'Postavka', icon: CheckSquare },
@@ -29,7 +30,7 @@ export const Navigation: React.FC<NavigationProps> = ({ currentTab, onSelectTab 
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-stone-900/95 backdrop-blur-md border-t border-amber-900/40 shadow-2xl safe-area-pb">
-      <div className="max-w-md mx-auto grid grid-cols-6 h-16 items-center px-1">
+      <div className="max-w-md mx-auto grid grid-cols-7 h-16 items-center px-0.5">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = currentTab === tab.id;
