@@ -109,11 +109,11 @@ export const SetupGuide: React.FC<SetupGuideProps> = ({
           <div>
             {currentEdition === '2010' ? (
               <span>
-                <strong className="text-rose-300">Specifičnosti postavke za 2010:</strong> Tabla se okreće na <strong>2010 stranu</strong>. Vremenska prognoza u 1. godini je <strong>obavezno pločica "0"</strong>. Farmeri se <strong>ne stavljaju</strong> na tablu (ne mogu se kupiti). Postavljaju se markeri banke i investicija. Burad se ne stavljaju unapred kod magnata.
+                <strong className="text-rose-300">Specifičnosti postavke za 2010:</strong> Tabla na <strong>2010 stranu</strong>. Prognoza u 1. godini je <strong>obavezno fiksna "0"</strong>. Start: <strong>10 Bagosa keša + 5 u banci</strong>. Početni vinograd <strong>SE PLAĆA</strong> iz keša! Zatim <strong>1. igrač dobija +0 (ostaje 10 - cena)</strong>, a <strong>2. igrač dobija +2 (ostaje 12 - cena)</strong>. Farmeri se ne kupuju.
               </span>
             ) : (
               <span>
-                <strong className="text-amber-300">Specifičnosti postavke za 2016:</strong> Tabla na strani 2016. Pločica "0" se <strong>baca u kutiju</strong> i okreće nasumično vreme. Postavlja se 9 farmera. Igrači započinju sa <strong>po 2 bureta već postavljenim kod svakog od 3 magnata</strong> (ukupno 6).
+                <strong className="text-amber-300">Specifičnosti postavke za 2016:</strong> Tabla na strani 2016. Pločica "0" se <strong>baca u kutiju</strong> i okreće nasumično vreme. Početni novac: <strong>1. igrač 19 Bagosa</strong>, <strong>2. igrač 20 Bagosa</strong> (nema banke). Postavlja se 9 farmera. Igrači započinju sa <strong>po 2 bureta već postavljenim kod svakog od 3 magnata</strong> (ukupno 6).
               </span>
             )}
           </div>
@@ -187,13 +187,119 @@ export const SetupGuide: React.FC<SetupGuideProps> = ({
                     {step.description}
                   </p>
 
-                  <ul className="space-y-1 pt-1 border-t border-stone-800/60">
-                    {step.details.map((detail, idx) => (
-                      <li key={idx} className={`text-[11px] flex items-start gap-1.5 ${isDone ? 'text-stone-500' : 'text-stone-300'}`}>
-                        <span className="text-amber-500 font-bold shrink-0">•</span>
-                        <span>{detail}</span>
-                      </li>
-                    ))}
+                  {/* Special Visual Callouts for Money */}
+                  {step.id === 'setup-players-2010' && (
+                    <div className="my-2 p-2.5 rounded-xl bg-stone-950 border border-rose-800/60 flex items-center justify-between text-xs shadow-inner">
+                      <div className="flex items-center gap-2">
+                        <span className="text-base">💵</span>
+                        <div>
+                          <div className="font-bold text-rose-200 text-[11px]">Početni gotovinski novac (u novčanicama pre kupovine):</div>
+                          <div className="text-[10px] text-stone-300 font-semibold">
+                            Danijel (Žuti): <span className="text-amber-400 font-bold">10 Bagosa</span> • Ceca (Crvena): <span className="text-rose-400 font-bold">10 Bagosa</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800">
+                          + 5 u Banci oboje
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {step.id === 'setup-initial-vineyard-2010' && (
+                    <div className="my-2 p-3 rounded-xl bg-stone-950 border border-emerald-800/60 space-y-2 text-xs shadow-inner">
+                      <div className="font-bold text-emerald-300 text-[11px] flex items-center justify-between">
+                        <div className="flex items-center gap-1.5">
+                          <span>💰</span>
+                          <span>Novac nakon kupovine vinograda i kompenzacije za 2P:</span>
+                        </div>
+                        <span className="text-[9px] bg-emerald-950 text-emerald-300 border border-emerald-800 px-1.5 py-0.5 rounded font-bold">
+                          Plaća se cena sa pločice
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 text-[11px]">
+                        <div className="p-2.5 rounded-lg bg-stone-900/90 border border-stone-800 space-y-1">
+                          <div className="text-amber-400 font-bold text-xs flex items-center justify-between">
+                            <span>1. Igrač (manji # regije)</span>
+                            <span className="text-emerald-400 font-black">+0 Bagosa</span>
+                          </div>
+                          <div className="text-stone-300 text-[10.5px]">
+                            Konačna gotovina: <strong className="text-white font-mono">10 - Cena + 0</strong>
+                          </div>
+                          <div className="text-stone-400 text-[9.5px]">
+                            (+ 5 Bagosa u banci)
+                          </div>
+                        </div>
+
+                        <div className="p-2.5 rounded-lg bg-stone-900/90 border border-emerald-900/60 bg-emerald-950/10 space-y-1">
+                          <div className="text-rose-400 font-bold text-xs flex items-center justify-between">
+                            <span>2. Igrač (veći # regije)</span>
+                            <span className="text-emerald-300 font-black text-sm">+2 Bagosa</span>
+                          </div>
+                          <div className="text-stone-300 text-[10.5px]">
+                            Konačna gotovina: <strong className="text-emerald-300 font-mono">12 - Cena</strong>
+                          </div>
+                          <div className="text-stone-400 text-[9.5px]">
+                            (+ 5 Bagosa u banci)
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="p-2 rounded-lg bg-stone-900/60 border border-stone-800 text-[10px] text-stone-300 space-y-0.5">
+                        <div className="text-amber-300 font-semibold">💡 Konkretan primer iz partije:</div>
+                        <div>• Ako 1. igrač kupi vinograd za <strong>4 Bagosa</strong> ➔ ostaje mu <strong>6 gotovine</strong> (10 - 4 + 0).</div>
+                        <div>• Ako 2. igrač kupi vinograd za <strong>5 Bagosa</strong> ➔ ostaje mu <strong>7 gotovine</strong> (10 - 5 + 2).</div>
+                        <div className="text-stone-400 text-[9px] pt-0.5">• Na bankovnom računu u Banco do Vinho oboje i dalje imaju po <strong>5 Bagosa</strong>.</div>
+                      </div>
+                    </div>
+                  )}
+
+                  {step.id === 'setup-players' && (
+                    <div className="my-2 p-2.5 rounded-xl bg-stone-950 border border-amber-800/60 flex items-center justify-between text-xs shadow-inner">
+                      <div className="flex items-center gap-2">
+                        <span className="text-base">💵</span>
+                        <div>
+                          <div className="font-bold text-amber-200 text-[11px]">Početni novac za 2016 Vintage (samo gotovina):</div>
+                          <div className="text-[10px] text-stone-300 font-semibold">
+                            1. Igrač: <span className="text-amber-400">19 Bagosa</span> • 2. Igrač: <span className="text-amber-400">20 Bagosa</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                          Nema banke
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  <ul className="space-y-1.5 pt-1 border-t border-stone-800/60">
+                    {step.details.map((detail, idx) => {
+                      const isSubBullet = detail.startsWith('     •') || detail.startsWith('     -');
+                      const isBullet = detail.startsWith('  •') || detail.startsWith('  -');
+                      const cleanText = detail.replace(/^(\s*[•\-])\s*/, '');
+                      const isKeyHeader = detail.startsWith('1.') || detail.startsWith('2.') || detail.startsWith('3.') || detail.startsWith('POČETNI');
+
+                      return (
+                        <li 
+                          key={idx} 
+                          className={`text-[11px] flex items-start gap-1.5 ${
+                            isSubBullet ? 'pl-6 text-[10.5px]' : isBullet ? 'pl-3' : ''
+                          } ${isDone ? 'text-stone-500' : isKeyHeader ? 'text-amber-300 font-bold pt-1' : 'text-stone-300'}`}
+                        >
+                          {!isKeyHeader && (
+                            <span className={`shrink-0 font-bold ${
+                              isSubBullet ? 'text-stone-500 text-[8px] mt-0.5' : isBullet ? 'text-amber-400' : 'text-amber-500'
+                            }`}>
+                              {isSubBullet ? '▪' : '•'}
+                            </span>
+                          )}
+                          <span className="leading-snug">{isKeyHeader ? detail : cleanText || detail}</span>
+                        </li>
+                      );
+                    })}
                   </ul>
 
                   {(step.id.includes('regions') || step.id.includes('vineyard')) && onOpenRegions && (

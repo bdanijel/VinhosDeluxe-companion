@@ -58,7 +58,7 @@ export const GameTracker: React.FC<GameTrackerProps> = ({
   });
   const [danijelBank, setDanijelBank] = useState<number>(() => {
     const s = localStorage.getItem('vinhos_d_bank');
-    return s ? parseInt(s) : 10;
+    return s ? parseInt(s) : 5;
   });
   const [danijelFairPoints, setDanijelFairPoints] = useState<number>(() => {
     const s = localStorage.getItem('vinhos_d_fp');
@@ -66,16 +66,16 @@ export const GameTracker: React.FC<GameTrackerProps> = ({
   });
   const [danijelBarrelsSupply, setDanijelBarrelsSupply] = useState<number>(() => {
     const s = localStorage.getItem('vinhos_d_supply');
-    return s ? parseInt(s) : 4;
+    return s ? parseInt(s) : (currentEdition === '2010' ? 8 : 2);
   });
 
   const [cecaBagos, setCecaBagos] = useState<number>(() => {
     const s = localStorage.getItem('vinhos_c_bagos');
-    return s ? parseInt(s) : 10;
+    return s ? parseInt(s) : (currentEdition === '2010' ? 12 : 20);
   });
   const [cecaBank, setCecaBank] = useState<number>(() => {
     const s = localStorage.getItem('vinhos_c_bank');
-    return s ? parseInt(s) : 10;
+    return s ? parseInt(s) : 5;
   });
   const [cecaFairPoints, setCecaFairPoints] = useState<number>(() => {
     const s = localStorage.getItem('vinhos_c_fp');
@@ -83,7 +83,7 @@ export const GameTracker: React.FC<GameTrackerProps> = ({
   });
   const [cecaBarrelsSupply, setCecaBarrelsSupply] = useState<number>(() => {
     const s = localStorage.getItem('vinhos_c_supply');
-    return s ? parseInt(s) : 4;
+    return s ? parseInt(s) : (currentEdition === '2010' ? 8 : 2);
   });
 
   const handleEditionChange = (ed: GameEdition) => {
@@ -174,14 +174,15 @@ export const GameTracker: React.FC<GameTrackerProps> = ({
     if (confirm('Da li želite da započnete novu partiju od 1. godine?')) {
       setYear(1);
       setPhaseIndex(0);
-      setDanijelBagos(10);
-      setDanijelBank(10);
+      const is2010 = currentEdition === '2010';
+      setDanijelBagos(is2010 ? 10 : 19);
+      setDanijelBank(is2010 ? 5 : 0);
       setDanijelFairPoints(0);
-      setDanijelBarrelsSupply(4);
-      setCecaBagos(10);
-      setCecaBank(10);
+      setDanijelBarrelsSupply(is2010 ? 8 : 2);
+      setCecaBagos(is2010 ? 12 : 20);
+      setCecaBank(is2010 ? 5 : 0);
       setCecaFairPoints(0);
-      setCecaBarrelsSupply(4);
+      setCecaBarrelsSupply(is2010 ? 8 : 2);
       localStorage.removeItem('vinhos_year');
       localStorage.removeItem('vinhos_phase');
       localStorage.removeItem('vinhos_d_bagos');

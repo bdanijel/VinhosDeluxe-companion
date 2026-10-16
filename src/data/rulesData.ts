@@ -81,24 +81,26 @@ export const VERSION_DIFFERENCES: VersionDifferenceItem[] = [
       title: 'Dvoslojni finansijski sistem: Gotovina + Banka + Investicije',
       description: 'Igrači vode bankovni račun na posebnoj stazi (0–24 Bagosa) i investicionu stazu (-2 do +3). Prodaja vina puni isključivo bankovni račun, a ne gotovinu!',
       keyPoints: [
+        'Početni novac: U 2010 igrači kreću sa 10 Bagosa gotovine i 5 u banci. Nakon izbora vinograda, 1. igrač dobija +0 (ima 10), a 2. igrač dobija +2 (ima 12 gotovine).',
         'Postoji posebna akcija "Bank" na Quadrelu (Podizanje novca, Polaganje depozita, Investiranje).',
         'Razinvestiranje (Divesting) se može uraditi U BILO KOM TRENUTKU besplatno (za dobijanje gotovine iz banke).',
         'U Fazi Održavanja automatski se obračunava kamata sa investicione staze (pozitivna ili negativna).',
         'Ako ne možete platiti negativnu kamatu u banci: gubite 2 VP i MORATE odbaciti Vinariju (ili Vinograd)!',
         'Kraj igre: Bodove (0 do 18 VP) donosi SAMO stanje na bankovnom računu. Gotovina u ruci i investiciona staza donose 0 VP!'
       ],
-      rulebookRef: '2010 Pravila str. 11, 12, 15, 20'
+      rulebookRef: '2010 Pravila str. 4, 11, 12, 15, 20'
     },
     v2016: {
       title: 'Pojednostavljeni keš sistem (Samo Bagosi u ruci)',
       description: 'Nema table banke, nema bankovnih računa, nema investicija niti kamata. Sav novac je u gotovini (Bagos žetoni).',
       keyPoints: [
+        'Početni novac: Nema banke. 1. igrač odmah dobija 19 Bagosa gotovine, a 2. igrač dobija 20 Bagosa.',
         'Akcija "Bank" uopšte ne postoji na Quadrelu.',
         'Prodaja vina odmah daje direktnu gotovinu u ruku.',
         'Nema plaćanja kamata u Fazi Održavanja.',
         'Na kraju igre gotovina se pretvara u VP po posebnoj tabeli (0 do 22 VP).'
       ],
-      rulebookRef: '2016 Pravila str. 11, 16'
+      rulebookRef: '2016 Pravila str. 4, 11, 16'
     },
     strategicTip: 'U 2010 verziji bankrot je stvaran i brutalan — manjak na bankovnom računu vodi do uništavanja vinarija i gubitka 2 VP!'
   },
@@ -408,24 +410,26 @@ export const SETUP_STEPS_2010: SetupStep[] = [
     edition: '2010',
     description: 'Postavka table 2010 Reserve sa bankom i fiksnim vremenom.',
     details: [
-      'Postavite glavnu tablu na stranu 2010 RESERVE (sa zonom Banco do Vinho i Magnat rešetkom).',
-      'OBAVEZNO: Pločica "0" (nula) Vintage stavlja se licem nagore na polje 1. godine!',
-      'Promešajte preostalih 8 Vintage pločica licem nadole za godine od 2 do 6.',
+      'Postavite glavnu tablu na stranu 2010 RESERVE (sa zonom Banco do Vinho i Magnat rešetkom na sredinu stola).',
+      'OBAVEZNO: Vintage pločica "0" (nula) stavlja se licem nagore na polje vremenske prognoze 1. godine!',
+      'Promešajte preostalih 8 Vintage pločica licem nadole i rasporedite ih za godine od 2 do 6.',
       'Postavite beli marker Godine/Poreza na početno polje 1. godine.',
-      'Radnici i zalihe: Uklonite SVE Farmere sa table (u 2010 farmeri se ne mogu kupovati!). Postavite vinarije, podrume i enologe na odgovarajuća polja.',
-      'Složite 4 kupa vinskih stručnjaka licem nagore.'
+      'Radnici i zalihe: Uklonite SVE Farmere sa table u kutiju (u 2010 farmeri se ne mogu kupovati!).',
+      'Postavite na tablu komponente za 2 igrača: 11 Vinarija, 8 Podruma i 7 Enologa (višak u kutiju).',
+      'Složite 4 kupa vinskih stručnjaka licem nagore na odgovarajuća polja.'
     ]
   },
   {
     id: 'setup-bank-2010',
-    title: '2. Banco do Vinho (Banka i Investicije)',
+    title: '2. Banco do Vinho (Banka: 5 Bagosa & Investicije: 0)',
     category: 'board',
     edition: '2010',
-    description: 'Priprema bankovnih računa i investicione trake za 2010.',
+    description: 'Priprema bankovnih računa i investicione trake za oba igrača.',
     details: [
-      'Svaki igrač postavlja svoj marker bankovnog računa na početno polje na stazi Banco do Vinho (0 do 24).',
-      'Svaki igrač postavlja marker investicija na polje "0" na traci investicija (-2 do +3).',
-      'Pripremite zajedničku zalihu Bagos novčića.'
+      'Svaki igrač postavlja svoj marker bankovnog računa (disk u svojoj boji) na broj 5 na stazi Banco do Vinho.',
+      'Oba igrača započinju sa tačno 5 BAGOSA na svom bankovnom računu!',
+      'Svaki igrač postavlja svoj marker investicija na polje "0" na traci investicija (-2 do +3).',
+      'Pripremite zajedničku zalihu Bagos novčanica i kovanica pored table.'
     ]
   },
   {
@@ -434,44 +438,89 @@ export const SETUP_STEPS_2010: SetupStep[] = [
     category: 'board',
     edition: '2010',
     isTwoPlayerSpecial: true,
-    description: 'Priprema regija za 2 igrača u 2010.',
+    description: 'U 2 igrača priprema se tačno 7 od 9 regija.',
     details: [
-      'Zvanična preporuka pravila za 2 igrača: Uklonite Setúbal (7) i Algarve (9) u kutiju.',
-      'Složite pločice vinograda za 7 regija sa cenom okrenutom nagore.',
+      'Zvanična preporuka pravila za 2 igrača: UKLONITE Setúbal (regija 7) i Algarve (regija 9) u kutiju!',
+      'Složite pločice vinograda za preostalih 7 regija sa cenom okrenutom nagore (po 2 crvena i 2 bela po regiji).',
       'Stavite 2 Porto pločice u Douro regiju (regija 3).',
-      'Stavite sve Kockice Renomea u zajedničku zalihu.'
+      'Stavite sve Kockice Renomea (Region Renown Cubes) u zajedničku zalihu.'
     ]
   },
   {
     id: 'setup-export-2010',
-    title: '4. Izvozna Zona (2-Player Ram)',
+    title: '⭐ 4. Izvozna Zona (POKLOPAC / RAM ZA 2 IGRAČA)',
     category: 'two_player_focus',
     edition: '2010',
     isTwoPlayerSpecial: true,
-    description: 'Postavite 2-player overlay preko Export zone.',
+    description: 'KRITIČNO ZA DVA IGRAČA: Koristi se ograničeni 2-player ram za izvoz!',
     details: [
-      'Stavite 2-player ram preko Export zone (dostupna su samo polja unutar rama).',
-      'Za 2 igrača u sajmu se koriste bodovanja za 1. i 3. mesto!'
+      'Stavite poseban ram za 2 igrača (2-player frame overlay) preko Export zone.',
+      'Dozvoljeno je izvoziti vino SAMO na polja koja se nalaze unutar 2-player rama.',
+      'U sajmu za 2 igrača koriste se isključivo bodovanja za 1. i 3. mesto (drugo mesto se preskače)!'
     ]
   },
   {
     id: 'setup-players-2010',
-    title: '5. Danijel & Ceca – Burad i Početna Imanja (2010)',
+    title: '5. Danijel (Žuti) i Ceca (Crvena) – Resursi i Početnih 10 Bagosa Keša (2010)',
     category: 'player_board',
     edition: '2010',
     isTwoPlayerSpecial: true,
-    description: 'Sva burad u ličnim zalihama (nema početnih buradi kod magnata!).',
+    description: 'Postavka ličnih tabli, buradi i početnog novca pre izbora vinograda.',
     details: [
-      'Za razliku od 2016, u 2010 NEMA početnih buradi postavljenih na magnate! Sva burad ostaju u ličnoj zalihi.',
+      'Danijel uzima ŽUTE komponente, Ceca CRVENE komponente.',
+      'Burad (tačno 8 buradi po igraču): Za razliku od 2016, u 2010 NEMA buradi postavljenih kod magnata! SVIH 8 BURADI idu u ličnu zalihu (Supply) na tabli igrača.',
       'U 1. godini NIKO ne može slati burad kod Magnata.',
-      'Početni novac i banka postavljaju se prema standardnim pravilima za 2010 Reserve.',
-      'Svaki igrač bira 1 početno imanje, uzima vinograd i početno vino (za Ribatejo dobija farmera; za Dão podrum; za Lisboa vinariju).'
+      'Postavite po 1 disk na prvi slot svakog od svojih imanja i disk na broj 0 na VP traci.',
+      'POČETNI GOTOVINSKI NOVAC (Pre izbora vinograda):',
+      '  • OBA IGRAČA dobijaju tačno po 10 BAGOSA u gotovini (papirne novčanice u ruku).',
+      '  • Stanje u banci: Podsećanje da oba igrača već imaju i po 5 BAGOSA na svom bankovnom računu (marker na polju 5).'
+    ]
+  },
+  {
+    id: 'setup-initial-vineyard-2010',
+    title: '⭐ 6. Kupovina Početnog Vinograda, Određivanje Redosleda i Kompenzacija (+0 vs +2 Bagosa)',
+    category: 'player_board',
+    edition: '2010',
+    isTwoPlayerSpecial: true,
+    description: 'Plaćanje vinograda iz gotovine, ko igra prvi po broju regije i tačan novac nakon kupovine!',
+    details: [
+      '1. KUPOVINA POČETNOG VINOGRADA (PLAĆA SE U 2010!):',
+      '  • U 2010 verziji, početni vinograd SE PLAĆA iz početnih 10 Bagosa gotovine (na pločici je vizuelno prikazana cena / Cost Side)!',
+      '  • Svaki igrač bira regiju od 7 pripremljenih i PLAĆA u gotovini tačnu cenu sa pločice (npr. 3 do 7 Bagosa u zavisnosti od regije).',
+      '  • Pločica vinograda se stavlja na 1. imanje, disk tog imanja na mapi u tu regiju, i dodaje se 1 Kockica Renomea u ram regije.',
+      '  • Svaki igrač uzima BESPLATNO POČETNO VINO u skladište:',
+      '     • Minho / Trás-os-Montes / Bairrada: Vino vrednosti 2',
+      '     • Douro: Vino vrednosti 2, ILI vrednosti 5 ako odmah pravite Porto vino!',
+      '     • Dão: Odmah besplatan Podrum i vino vrednosti 2 u njemu!',
+      '     • Ribatejo: Odmah besplatan Farmer na vinogradu i vino vrednosti 3!',
+      '     • Lisboa: Odmah besplatna Vinarija i vino vrednosti 3!',
+      '2. ODREĐIVANJE REDOSLEDA POTEZA (KO JE PRVI IGRAČ):',
+      '  • Redosled poteza za 1. godinu određuje se po brojevima kupljenih regija:',
+      '  • Igrač sa MANJIM BROJEM regije (npr. Minho #1 ili Douro #3) postaje PRVI IGRAČ!',
+      '  • Igrač sa VEĆIM BROJEM regije (npr. Dão #4, Bairrada #5, Lisboa #6 ili Alentejo #8) postaje DRUGI IGRAČ.',
+      '3. NAKON KUPOVINE VINOGRADA – KOMPENZACIJA NOVCA (Zvanično 2010 pravilo):',
+      '  • PRVI IGRAČ dobija: +0 dodatnih Bagosa ➔ Konačna gotovina: 10 - [cena vinograda] + 0.',
+      '  • DRUGI IGRAČ (u 2 igrača) dobija: +2 DODATNA BAGOSA ➔ Konačna gotovina: 10 - [cena vinograda] + 2 (odnosno 12 - cena vinograda)!',
+      '  • U banci: Oba igrača zadržavaju svojih početnih 5 BAGOSA na računu u Banco do Vinho.',
+      '  • Primer: Ako 1. igrač kupi vinograd za 4 Bagosa, ostaje mu 6 Bagosa gotovine (10 - 4 + 0). Ako 2. igrač kupi vinograd za 5 Bagosa, ostaje mu 7 Bagosa gotovine (10 - 5 + 2).'
     ]
   }
 ];
 
 export const RULES_CLARIFICATIONS: RuleClarification[] = [
   // 2010-SPECIFIC & DIFFERENCES FIRST
+  {
+    id: 'diff-starting-money-2010',
+    title: '💰 Početni Novac, Kupovina Vinograda i Kompenzacija (2010 vs 2016)',
+    category: 'bank_economy',
+    edition: 'both',
+    isDifference: true,
+    question: 'Da li se početni vinograd u 2010 plaća, i koliko tačno novca imaju prvi i drugi igrač nakon kupovine vinograda?',
+    answer: 'TAČNA ZVANIČNA PRAVILA ZA 2010 RESERVE I KUPOVINU VINOGRADA:\n\n1. U 2010 RESERVE:\n• Početni novac pre kupovine:\n  - OBA IGRAČA dobijaju tačno po 10 BAGOSA u gotovini (novčanice u ruku).\n  - OBA IGRAČA stavljaju marker na broj 5 na stazi Banco do Vinho (imaju po 5 BAGOSA u banci).\n  - Marker investicija je na 0.\n• Kupovina početnog vinograda:\n  - U 2010 pravilima, početni vinograd SE PLAĆA iz gotovine prema ceni koja je vizuelno odštampana na poleđini pločice (Cost Side)!\n  - Igrači biraju vinograd, plaćaju njegovu cenu u kešu i uzimaju početno vino (i bonus regije: Ribatejo farmer, Lisboa vinarija, Dão podrum).\n• Određivanje redosleda poteza:\n  - Igrač sa manjim brojem regije je 1. IGRAČ, a sa većim brojem regije je 2. IGRAČ.\n• Kompenzacija za redosled poteza:\n  - 1. IGRAČ dobija +0 dodatnih Bagosa ➔ Konačna gotovina: 10 - cena vinograda.\n  - 2. IGRAČ (u 2 igrača) dobija +2 DODATNA BAGOSA ➔ Konačna gotovina: 10 - cena vinograda + 2 (tj. 12 - cena vinograda)!\n  (U banci oboje imaju po 5 Bagosa).\n• Primer iz partije: Ako prvi igrač plati vinograd 4 Bagosa, ostaje mu 6 gotovine (10 - 4 + 0). Ako drugi igrač plati vinograd 5 Bagosa, ostaje mu 7 gotovine (10 - 5 + 2)!\n\n2. U 2016 SPECIAL VINTAGE:\n• Nema banke, investicija niti kompenzacije.\n• 1. igrač odmah dobija 19 BAGOSA gotovine, a 2. igrač 20 BAGOSA gotovine.\n• Početni vinograd u 2016 se dobija potpuno besplatno.',
+    tip: 'Potpuno ste u pravu! U 2010 vinograd se regularno plaća iz startnih 10 gotovine (cena je vizuelno naznačena na Cost Side pločice), a zatim 1. igrač dobija 0, a 2. igrač +2 Bagosa kompenzacije (uz po 5 Bagosa na bankovnom računu).',
+    pageRef: '2010 Pravila str. 4, 7',
+    tags: ['početni novac', '2010', '2016', 'banka', 'gotovina', 'kompenzacija', 'kupovina vinograda', 'cena vinograda', 'prvi igrač', 'drugi igrač', '10 bagosa', '12 bagosa']
+  },
   {
     id: 'diff-bank-rules-2010',
     title: '🏛️ Banka Banco do Vinho & Akcija Bank (Samo u 2010)',
